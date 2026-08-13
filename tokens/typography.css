@@ -1,0 +1,40 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Typography · "Athletic Editorial"
+   Bricolage Grotesque (display) + Hanken Grotesk (UI/body).
+   Mirrors client/src/theme/typography.ts.
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-sans:    'Hanken Grotesk', -apple-system, BlinkMacSystemFont,
+                  'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --weight-regular:   400;
+  --weight-medium:    500;
+  --weight-semibold:  600;
+  --weight-bold:      700;
+  --weight-extrabold: 800;
+
+  /* size · line-height · tracking (px values from the app scale) */
+  --text-display:      44px;  --leading-display: 46px;  --tracking-display: -1.4px;
+  --text-h1:           34px;  --leading-h1:      38px;  --tracking-h1:      -1.0px;
+  --text-h2:           24px;  --leading-h2:      29px;  --tracking-h2:      -0.6px;
+  --text-h3:           20px;  --leading-h3:      25px;  --tracking-h3:      -0.5px;
+  --text-h4:           17px;  --leading-h4:      23px;  --tracking-h4:      -0.4px;
+  --text-body:         16px;  --leading-body:    24px;
+  --text-small:        14px;  --leading-small:   20px;
+  --text-caption:      12px;  --leading-caption: 16px;  --tracking-caption: 0.72px;
+  --text-micro:        11px;  --leading-micro:   14px;  --tracking-micro:   0.2px;
+}
+
+/* ── Type helper classes ── */
+.t-display { font: var(--weight-extrabold) var(--text-display)/var(--leading-display) var(--font-display); letter-spacing: var(--tracking-display); color: var(--text-strong); }
+.t-h1 { font: var(--weight-extrabold) var(--text-h1)/var(--leading-h1) var(--font-display); letter-spacing: var(--tracking-h1); color: var(--text-strong); }
+.t-h2 { font: var(--weight-bold) var(--text-h2)/var(--leading-h2) var(--font-display); letter-spacing: var(--tracking-h2); color: var(--text-primary); }
+.t-h3 { font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display); letter-spacing: var(--tracking-h3); color: var(--text-primary); }
+.t-h4 { font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display); letter-spacing: var(--tracking-h4); color: var(--text-primary); }
+.t-body { font: var(--weight-regular) var(--text-body)/var(--leading-body) var(--font-sans); color: var(--text-primary); }
+.t-body-medium { font: var(--weight-medium) var(--text-body)/var(--leading-body) var(--font-sans); color: var(--text-primary); }
+.t-small { font: var(--weight-regular) var(--text-small)/var(--leading-small) var(--font-sans); color: var(--text-primary); }
+.t-caption { font: var(--weight-semibold) var(--text-caption)/var(--leading-caption) var(--font-sans); letter-spacing: var(--tracking-caption); text-transform: uppercase; color: var(--text-secondary); }
+.t-micro { font: var(--weight-medium) var(--text-micro)/var(--leading-micro) var(--font-sans); letter-spacing: var(--tracking-micro); color: var(--text-secondary); }

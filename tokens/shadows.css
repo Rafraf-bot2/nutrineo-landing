@@ -1,0 +1,15 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Elevation · "Athletic Editorial"
+   Warm espresso shadows (#241C15), never pure black. Very soft.
+   Mirrors client/src/theme/shadows.ts.
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --shadow-xs: 0 1px 2px rgba(36, 28, 21, 0.04);
+  --shadow-sm: 0 2px 6px rgba(36, 28, 21, 0.06);
+  --shadow-md: 0 4px 12px rgba(36, 28, 21, 0.08);
+  --shadow-lg: 0 8px 24px rgba(36, 28, 21, 0.12);
+  --shadow-xl: 0 16px 40px rgba(36, 28, 21, 0.16);
+
+  /* hairline ring used on flat tiles instead of a shadow */
+  --ring-border: inset 0 0 0 1px var(--color-border);
+}

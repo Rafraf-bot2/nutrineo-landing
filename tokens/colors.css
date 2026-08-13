@@ -1,0 +1,43 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Color primitives · "Athletic Editorial"
+   Warm near-white canvas + terracotta accent + espresso ink.
+   NO green anywhere (statuses included).
+   Mirrors client/src/theme/colors.ts (source of truth).
+   ────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Neutrals (warm) ── */
+  --color-canvas:         #FCFBF9; /* app background — warm near-white */
+  --color-surface-subtle: #F1ECE3; /* inset / secondary fill (oat)     */
+  --color-surface:        #FFFFFF; /* cards / sheets                   */
+  --color-border:         #ECE6DC; /* hairlines, dividers              */
+  --color-border-strong:  #D9D1C4; /* inputs, emphasis                 */
+  --color-muted:          #A89C8B; /* placeholders, icons              */
+  --color-ink:            #241C15; /* primary text (espresso)          */
+  --color-ink-strong:     #150F09; /* hero titles — deeper espresso    */
+  --color-ink-subtle:     #6E6457; /* secondary text                   */
+  --color-ink-disabled:   #B3A998; /* disabled text                    */
+  --color-ink-inverse:    #FCFBF9; /* text on dark surfaces            */
+
+  /* ── Terracotta — primary brand scale ── */
+  --terracotta-900: #7A2E15;
+  --terracotta-800: #D9542B; /* ★ brand primary */
+  --terracotta-700: #B8471F;
+  --terracotta-600: #C24E26;
+  --terracotta-500: #E0673F;
+  --terracotta-400: #E8895F;
+  --terracotta-300: #F0B49B;
+  --terracotta-200: #F6D2C2;
+  --terracotta-100: #FBEAE0;
+  --terracotta-50:  #FEF6F1;
+
+  /* ── Status accents (only) ── */
+  /* Validé — calm settled espresso, NOT terracotta, NOT green */
+  --status-valide:       #3C352B;
+  --status-valide-light: #E9E3D9;
+  --accent-amber:        #C8951B; /* en attente */
+  --accent-amber-dark:   #7A5A0E;
+  --accent-amber-light:  #FBF1D8;
+  --accent-coral:        #D2404E; /* à revoir / destructive */
+  --accent-coral-dark:   #8E2531;
+  --accent-coral-light:  #FBE7E9;
+}

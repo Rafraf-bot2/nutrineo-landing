@@ -1,0 +1,7 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Webfonts · "Athletic Editorial"
+   Bricolage Grotesque = display/titres (600/700/800)
+   Hanken Grotesk     = UI / corps (400→800)
+   Mirrors client/src/theme/typography.ts (expo-google-fonts).
+   ────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap');

@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NutriNeo — Le suivi nutrition, entre vos séances</title>
+<meta name="description" content="NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d'un geste, avec un retour qui compte." />
+<link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="stylesheet" href="styles.css" />
+<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
+<style>
+  /* ── Base ─────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--surface-canvas);
+    color: var(--text-primary);
+    font: var(--weight-regular) var(--text-body)/var(--leading-body) var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3, p { margin: 0; }
+  h1, h2, h3 { text-wrap: balance; font-family: var(--font-display); }
+  p { text-wrap: pretty; }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-6); }
+
+  /* ── Reveal on scroll (restrained) ────────────────────── */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .reveal.is-in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ── Buttons (app Button.tsx: terracotta fill, radius 14) ─ */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font: var(--weight-semibold) var(--text-body)/1 var(--font-sans);
+    border-radius: var(--radius-lg);
+    padding: 14px var(--space-6);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform .12s ease, background-color .12s ease, opacity .12s ease;
+  }
+  .btn:active { transform: scale(0.98); opacity: .75; }
+  .btn-primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-ghost { border-color: var(--border-strong); color: var(--text-primary); background: var(--surface-card); }
+  .btn-ghost:hover { background: var(--surface-subtle); }
+  .btn-inverse { background: var(--surface-canvas); color: var(--terracotta-800); }
+  .btn-inverse:hover { opacity: .92; }
+
+  .eyebrow {
+    font: var(--weight-semibold) var(--text-caption)/var(--leading-caption) var(--font-sans);
+    letter-spacing: var(--tracking-caption);
+    text-transform: uppercase;
+    color: var(--text-brand);
+  }
+
+  /* ── Wordmark (AnimatedWordmark: 2 N's terracotta) ────── */
+  .wordmark {
+    font: var(--weight-extrabold) 22px/1 var(--font-display);
+    letter-spacing: -1.1px;
+    color: var(--text-strong);
+  }
+  .wordmark em { font-style: normal; color: var(--terracotta-800); }
+
+  /* ── Nav — frosted glass (GlassSurface) ───────────────── */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--glass-fill);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-xs);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 68px;
+  }
+  .nav-links { display: flex; align-items: center; gap: var(--space-8); }
+  .nav-links a:not(.btn) {
+    font: var(--weight-medium) var(--text-small)/1 var(--font-sans);
+    color: var(--text-secondary); transition: color .12s ease;
+  }
+  .nav-links a:not(.btn):hover { color: var(--text-primary); }
+  .nav .btn { padding: 10px var(--space-5); font-size: var(--text-small); }
+  @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
+
+  /* ── Hero — aurora canvas (AuroraBackground) ──────────── */
+  .hero { position: relative; overflow: hidden; }
+  .hero::before, .hero::after {
+    content: '';
+    position: absolute;
+    width: 110vmax; height: 110vmax;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero::before {
+    top: -68vmax; left: -55vmax;
+    background: radial-gradient(circle at 45% 45%, var(--terracotta-300), transparent 62%);
+    opacity: .42;
+    animation: blobA 11s ease-in-out infinite alternate;
+  }
+  .hero::after {
+    bottom: -68vmax; right: -55vmax;
+    background: radial-gradient(circle at 55% 55%, var(--terracotta-200), transparent 62%);
+    opacity: .45;
+    animation: blobB 11s ease-in-out infinite alternate;
+  }
+  @keyframes blobA {
+    from { transform: translate(-2%, -1.5%) scale(1); opacity: .35; }
+    to   { transform: translate(1.5%, 1%) scale(1.12); opacity: .5; }
+  }
+  @keyframes blobB {
+    from { transform: translate(2%, 1.5%) scale(1.1); opacity: .5; }
+    to   { transform: translate(-1%, -.5%) scale(.95); opacity: .32; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero::before, .hero::after { animation: none; }
+  }
+  .hero-inner {
+    position: relative;
+    display: grid; grid-template-columns: 1.05fr .95fr;
+    gap: var(--space-16); align-items: center;
+    padding-block: var(--space-20) var(--space-24);
+  }
+  .hero h1 {
+    font: var(--weight-extrabold) clamp(38px, 5vw, 58px)/1.04 var(--font-display);
+    letter-spacing: -0.032em;
+    color: var(--text-strong);
+  }
+  .hero h1 em { font-style: normal; color: var(--terracotta-800); }
+  .hero .lede {
+    margin-top: var(--space-5);
+    font: var(--weight-regular) var(--text-h4)/1.45 var(--font-sans);
+    color: var(--text-secondary);
+    max-width: 46ch;
+  }
+  .hero-ctas { display: flex; gap: var(--space-3); margin-top: var(--space-8); flex-wrap: wrap; }
+  .hero-note {
+    margin-top: var(--space-4);
+    font: var(--weight-regular) var(--text-small)/var(--leading-small) var(--font-sans);
+    color: var(--text-secondary);
+  }
+
+  /* ── Hero swipe deck — live review loop ───────────────── */
+  .deck-zone { position: relative; width: 100%; max-width: 340px; margin: 0 auto; }
+  .deck { position: relative; height: 460px; }
+  .meal-card {
+    position: absolute; inset: 0;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    background: var(--surface-card);
+    transition: transform .55s cubic-bezier(.32,.72,.35,1), opacity .55s ease, box-shadow .55s ease;
+  }
+  .meal-card.pos-0 { transform: none; z-index: 3; box-shadow: var(--shadow-lg); }
+  .meal-card.pos-1 { transform: scale(.94) translateY(20px) rotate(-3deg); z-index: 2; box-shadow: var(--shadow-sm); }
+  .meal-card.pos-2 { transform: scale(.88) translateY(40px) rotate(2.5deg); z-index: 1; box-shadow: var(--shadow-xs); opacity: .92; }
+  /* drag phase — the card follows an invisible thumb */
+  .meal-card.pos-0.dragging { transform: translateX(46px) rotate(5deg); transition-duration: .7s; }
+  /* release — flies off right, like the app's approve fling */
+  .meal-card.fly { transform: translateX(140%) rotate(13deg) !important; opacity: 0; transition-duration: .6s; }
+  .meal-card.snap { transition: none; }
+  .meal-card img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* simulated thumb — gesture cue */
+  .thumb {
+    position: absolute; z-index: 6;
+    left: 38%; bottom: 26%;
+    width: 36px; height: 36px;
+    border-radius: var(--radius-full);
+    background: rgba(21, 15, 9, .22);
+    border: 2px solid rgba(255, 255, 255, .75);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .deck-zone.swiping .thumb { animation: thumbSwipe 1.4s cubic-bezier(.4,.1,.4,1) forwards; }
+  @keyframes thumbSwipe {
+    0%   { opacity: 0; transform: translateX(0) scale(1.15); }
+    18%  { opacity: 1; transform: translateX(0) scale(1); }
+    72%  { opacity: 1; transform: translateX(58px) scale(1); }
+    100% { opacity: 0; transform: translateX(84px) scale(.9); }
+  }
+
+  /* floating glass chips — product-true details */
+  .chip {
+    position: absolute; z-index: 7;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    background: var(--glass-fill);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    padding: 10px 14px;
+    box-shadow: var(--shadow-md);
+    font: var(--weight-semibold) var(--text-small)/1 var(--font-sans);
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+  .chip ion-icon { font-size: 17px; }
+  .chip .chip-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: var(--radius-full);
+    background: var(--terracotta-800); color: var(--color-ink-inverse);
+    font: var(--weight-bold) 11px/1 var(--font-sans);
+  }
+  .chip-queue { top: 6%; left: -18%; animation: chipFloat 7s ease-in-out infinite alternate; }
+  .chip-queue ion-icon { color: var(--terracotta-800); }
+  .chip-sent { bottom: -20px; right: -16%; animation: chipFloat 8s ease-in-out 1.2s infinite alternate-reverse; }
+  .chip-sent ion-icon { color: var(--status-valide); }
+  @keyframes chipFloat {
+    from { transform: translateY(-4px); }
+    to   { transform: translateY(6px); }
+  }
+  @media (max-width: 1020px) {
+    .chip-queue { left: -6px; }
+    .chip-sent { right: -6px; }
+  }
+  .meal-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(transparent 45%, rgba(21, 15, 9, .78));
+  }
+  .meal-pill {
+    position: absolute; top: var(--space-4); left: var(--space-4);
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(21, 15, 9, .5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--color-ink-inverse);
+    border-radius: var(--radius-pill);
+    padding: 6px 12px;
+    font: var(--weight-semibold) var(--text-micro)/1 var(--font-sans);
+    letter-spacing: var(--tracking-caption);
+    text-transform: uppercase;
+  }
+  .meal-caption {
+    position: absolute; left: var(--space-5); right: var(--space-5); bottom: var(--space-5);
+    color: var(--color-ink-inverse);
+  }
+  .meal-caption strong {
+    display: block;
+    font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display);
+    letter-spacing: var(--tracking-h3);
+  }
+  .meal-caption small {
+    font: var(--weight-medium) var(--text-small)/var(--leading-small) var(--font-sans);
+    opacity: .82;
+  }
+  /* Stamp "VALIDÉ" — espresso, calm & settled (app semantics: the check
+     carries the meaning, not a loud accent color) */
+  .stamp {
+    position: absolute; top: 42%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-8deg) scale(.6);
+    opacity: 0;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    border: 3px solid var(--status-valide);
+    color: var(--status-valide);
+    background: rgba(252, 251, 249, .93);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-5);
+    font: var(--weight-extrabold) var(--text-h3)/1 var(--font-display);
+    letter-spacing: .08em;
+    transition: opacity .28s ease, transform .28s cubic-bezier(.2,1.4,.4,1);
+  }
+  .meal-card.stamped .stamp { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
+  @media (prefers-reduced-motion: reduce) {
+    .meal-card, .stamp { transition: none; }
+    .meal-card.pos-0 .stamp { opacity: 1; transform: translate(-50%, -50%) rotate(-8deg) scale(1); }
+    .thumb { display: none; }
+    .chip-queue, .chip-sent { animation: none; }
+  }
+  @media (max-width: 880px) {
+    .hero-inner { grid-template-columns: 1fr; gap: var(--space-12); padding-block: var(--space-12) var(--space-16); }
+    .deck { height: 400px; }
+    .deck-zone { max-width: 300px; }
+  }
+
+  /* ── Sections ─────────────────────────────────────────── */
+  section { padding: var(--space-24) 0; }
+  .section-head { max-width: 620px; margin-bottom: var(--space-16); }
+  .section-head h2 {
+    font: var(--weight-extrabold) clamp(28px, 3.4vw, 38px)/1.12 var(--font-display);
+    letter-spacing: -0.028em;
+    color: var(--text-strong);
+    margin-top: var(--space-3);
+  }
+  .section-head p {
+    margin-top: var(--space-4);
+    color: var(--text-secondary);
+    font-size: var(--text-h4); line-height: 1.45;
+  }
+
+  /* ── How it works ─────────────────────────────────────── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .step {
+    border-top: 1px solid var(--border-default);
+    padding-top: var(--space-6);
+  }
+  .step .num {
+    display: block;
+    font: var(--weight-semibold) var(--text-caption)/1 var(--font-sans);
+    letter-spacing: var(--tracking-caption);
+    color: var(--text-secondary);
+  }
+  .step ion-icon { display: block; font-size: 28px; color: var(--terracotta-800); margin-top: var(--space-5); }
+  .step h3 {
+    font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display);
+    letter-spacing: var(--tracking-h3);
+    margin-top: var(--space-3);
+  }
+  .step p { margin-top: var(--space-3); color: var(--text-secondary); }
+  @media (max-width: 880px) { .steps { grid-template-columns: 1fr; } }
+
+  /* ── Photo band — full-bleed strip, glass pills over it ── */
+  .photo-band { padding: 0; position: relative; }
+  .band-track {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    height: 340px;
+  }
+  .band-cell { position: relative; overflow: hidden; }
+  .band-cell img { width: 100%; height: 100%; object-fit: cover; }
+  .band-cell::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(transparent 55%, rgba(21, 15, 9, .35));
+  }
+  .band-pill {
+    position: absolute; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--glass-fill);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    padding: 8px 13px;
+    box-shadow: var(--shadow-sm);
+    font: var(--weight-semibold) var(--text-micro)/1 var(--font-sans);
+    letter-spacing: var(--tracking-caption);
+    text-transform: uppercase;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .band-pill ion-icon { font-size: 14px; }
+  .band-pill.p-time { top: var(--space-5); left: var(--space-5); }
+  .band-pill.p-status { bottom: var(--space-5); right: var(--space-5); }
+  .band-pill.p-status.ok ion-icon { color: var(--status-valide); }
+  .band-pill.p-status.wait ion-icon { color: var(--accent-amber); }
+  .band-pill.p-tag { bottom: var(--space-5); left: var(--space-5); color: var(--terracotta-700); }
+  @media (max-width: 880px) {
+    .band-track { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); height: 480px; }
+    .band-cell:nth-child(n+5) { display: none; }
+  }
+
+  /* ── Dark product section — espresso immersive ────────── */
+  .dark-section {
+    background: var(--color-ink);
+    color: var(--text-inverse);
+    overflow: hidden;
+  }
+  .dark-inner {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: var(--space-16); align-items: center;
+  }
+  .dark-section .eyebrow { color: var(--terracotta-400); }
+  .dark-section h2 {
+    font: var(--weight-extrabold) clamp(28px, 3.4vw, 38px)/1.12 var(--font-display);
+    letter-spacing: -0.028em;
+    margin-top: var(--space-3);
+    color: var(--color-ink-inverse);
+  }
+  .dark-section .dark-copy p {
+    margin-top: var(--space-5);
+    color: rgba(252, 251, 249, .72);
+    font-size: var(--text-h4); line-height: 1.45;
+    max-width: 44ch;
+  }
+  .dark-points { margin-top: var(--space-8); display: grid; gap: var(--space-4); }
+  .dark-point { display: flex; gap: var(--space-3); align-items: flex-start; color: rgba(252, 251, 249, .88); }
+  .dark-point ion-icon { font-size: 20px; color: var(--terracotta-400); flex-shrink: 0; margin-top: 2px; }
+
+  /* Phone mockup — the client's thread, as in the app */
+  .phone-zone { position: relative; width: fit-content; margin: 0 auto; }
+  .phone-zone .chip { position: absolute; }
+  .phone-zone .chip-pending { top: -16px; left: -36px; animation: chipFloat 7.5s ease-in-out .6s infinite alternate; }
+  .phone-zone .chip-pending ion-icon { color: var(--accent-amber); }
+  .phone-zone .chip-reply { bottom: -14px; right: -42px; animation: chipFloat 8.5s ease-in-out 1.8s infinite alternate-reverse; }
+  .phone-zone .chip-reply ion-icon { color: var(--terracotta-800); }
+  @media (max-width: 1020px) {
+    .phone-zone .chip-pending { left: -10px; }
+    .phone-zone .chip-reply { right: -10px; }
+  }
+  .phone {
+    width: 320px; margin: 0 auto;
+    background: var(--surface-canvas);
+    border-radius: 40px;
+    padding: var(--space-3);
+    box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .phone-screen {
+    background: var(--surface-canvas);
+    border-radius: 30px; overflow: hidden;
+    color: var(--text-primary);
+  }
+  .chat-header {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-bottom: 1px solid var(--border-default);
+    background: var(--surface-card);
+  }
+  .avatar {
+    width: 38px; height: 38px; border-radius: var(--radius-full);
+    background: var(--terracotta-800); color: var(--color-ink-inverse);
+    display: flex; align-items: center; justify-content: center;
+    font: var(--weight-bold) var(--text-small)/1 var(--font-display);
+    box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--terracotta-800);
+  }
+  .chat-header strong { font: var(--weight-semibold) var(--text-small)/1.2 var(--font-display); display: block; letter-spacing: -0.2px; }
+  .chat-header small {
+    font: var(--weight-semibold) 10px/1.4 var(--font-sans);
+    letter-spacing: var(--tracking-caption); text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+  .chat-body { padding: var(--space-4); display: grid; gap: var(--space-3); background: var(--surface-canvas); }
+  .bubble { max-width: 82%; }
+  .bubble.me { justify-self: end; }
+  /* MealBubble — status accent bar on the left, like MealCard */
+  .meal-bubble {
+    position: relative;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+  .meal-bubble::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent, var(--status-valide));
+    z-index: 1;
+  }
+  .meal-bubble.is-pending { --accent: var(--accent-amber); }
+  .meal-bubble img { height: 110px; width: 100%; object-fit: cover; }
+  .meal-bubble .mb-meta { padding: var(--space-2) var(--space-3) var(--space-3); }
+  .mb-meta span:not(.badge):not(.dot) { font: var(--weight-medium) 12px/1.4 var(--font-sans); color: var(--text-primary); display: block; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    border-radius: var(--radius-pill);
+    padding: 3px 9px;
+    font: var(--weight-semibold) 9px/1.4 var(--font-sans);
+    letter-spacing: var(--tracking-caption); text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .badge .dot { width: 5px; height: 5px; border-radius: var(--radius-full); }
+  .badge.ok  { background: var(--status-approved-bg); color: var(--status-approved-fg); }
+  .badge.ok .dot { background: var(--status-approved-dot); }
+  .badge.wait { background: var(--status-pending-bg); color: var(--status-pending-fg); }
+  .badge.wait .dot { background: var(--status-pending-dot); }
+  .fb-bubble {
+    background: var(--terracotta-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3);
+  }
+  .fb-bubble .fb-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+  .fb-tag {
+    background: var(--surface-card);
+    border: 1px solid var(--terracotta-200);
+    color: var(--terracotta-700);
+    border-radius: var(--radius-pill);
+    padding: 3px 9px;
+    font: var(--weight-semibold) 9px/1.4 var(--font-sans);
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .fb-bubble p { font: var(--weight-regular) 12px/1.5 var(--font-sans); color: var(--color-ink); }
+  .fb-bubble small {
+    display: block; margin-top: 5px;
+    font: var(--weight-medium) 10px/1.4 var(--font-sans);
+    color: var(--terracotta-700);
+  }
+  @media (max-width: 880px) {
+    .dark-inner { grid-template-columns: 1fr; gap: var(--space-12); }
+    .phone { width: 290px; }
+  }
+
+  /* ── Benefits cards ───────────────────────────────────── */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
+  .card {
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    box-shadow: var(--shadow-sm);
+  }
+  .card ion-icon { font-size: 26px; color: var(--terracotta-800); }
+  .card h3 {
+    font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display);
+    letter-spacing: var(--tracking-h4);
+    margin-top: var(--space-4);
+  }
+  .card p { margin-top: var(--space-3); color: var(--text-secondary); font-size: var(--text-small); line-height: var(--leading-small); }
+  @media (max-width: 880px) { .cards { grid-template-columns: 1fr; } }
+
+  /* ── Manifesto / quote — oat inset ─────────────────────── */
+  .manifesto { background: var(--surface-subtle); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
+  .manifesto-inner { max-width: 760px; margin: 0 auto; text-align: center; }
+  .manifesto h2 {
+    font: var(--weight-extrabold) clamp(26px, 3.2vw, 36px)/1.18 var(--font-display);
+    letter-spacing: -0.028em;
+    color: var(--text-strong);
+  }
+  .manifesto h2 em { font-style: normal; color: var(--terracotta-800); }
+  .manifesto-lede {
+    max-width: 58ch; margin: var(--space-8) auto 0;
+    font: var(--weight-regular) var(--text-h4)/1.55 var(--font-sans);
+    color: var(--text-secondary);
+  }
+
+  /* ── Final CTA — terracotta ───────────────────────────── */
+  .cta-final { background: var(--terracotta-800); color: var(--color-ink-inverse); }
+  .cta-inner { text-align: center; max-width: 640px; margin: 0 auto; }
+  .cta-final h2 {
+    font: var(--weight-extrabold) clamp(30px, 4vw, 46px)/1.08 var(--font-display);
+    letter-spacing: -0.03em;
+  }
+  .cta-final p { margin-top: var(--space-5); color: rgba(252, 251, 249, .85); font-size: var(--text-h4); line-height: 1.45; }
+  .cta-final .btn { margin-top: var(--space-8); }
+  .cta-final .cta-sub { margin-top: var(--space-4); font-size: var(--text-small); color: rgba(252, 251, 249, .7); }
+  .cta-final .cta-sub a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ── Footer ───────────────────────────────────────────── */
+  footer { padding: var(--space-10) 0; }
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-4); flex-wrap: wrap;
+  }
+  .footer-inner .wordmark { font-size: 16px; letter-spacing: -0.6px; }
+  .footer-inner p { font: var(--weight-regular) var(--text-caption)/1.4 var(--font-sans); color: var(--text-secondary); }
+</style>
+</head>
+<body>
+
+<!-- ══ Nav — frosted glass ══ -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="#"><em>N</em>utri<em>N</em>eo</a>
+    <div class="nav-links">
+      <a href="#comment">Comment ça marche</a>
+      <a href="#produit">Le produit</a>
+      <a href="#contact" class="btn btn-primary">Demander une démo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ Hero — aurora canvas ══ -->
+<header class="hero">
+  <div class="container hero-inner">
+    <div>
+      <p class="eyebrow">Pour les coachs en nutrition</p>
+      <h1 style="margin-top: var(--space-4);">Vos clients photographient. Vous validez. <em>Ils progressent.</em></h1>
+      <p class="lede">NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d'un geste, avec un retour qui compte — entre les séances, là où les habitudes se construisent.</p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn btn-primary">Demander une démo<ion-icon name="arrow-forward"></ion-icon></a>
+        <a href="#comment" class="btn btn-ghost">Voir comment ça marche</a>
+      </div>
+      <p class="hero-note">Un suivi qui tient en cinq minutes par jour, pour tous vos clients.</p>
+    </div>
+
+    <div class="deck-zone" id="deckZone" aria-hidden="true">
+      <span class="chip chip-queue"><ion-icon name="albums-outline"></ion-icon>File d'attente<span class="chip-count" id="queueCount">3</span></span>
+      <div class="deck" id="deck"></div>
+      <span class="thumb"></span>
+      <span class="chip chip-sent"><ion-icon name="checkmark-circle"></ion-icon><span id="sentLabel">Retour envoyé · Thomas</span></span>
+    </div>
+  </div>
+</header>
+
+<!-- ══ Comment ça marche ══ -->
+<section id="comment">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Comment ça marche</p>
+      <h2>Trois gestes, un suivi qui tient dans la journée.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="num">01</span>
+        <ion-icon name="camera-outline"></ion-icon>
+        <h3>Le client photographie son repas</h3>
+        <p>Une photo suffit. Pas de saisie, pas de portions à peser — le repas part vers vous en quelques secondes, au moment où il se vit.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">02</span>
+        <ion-icon name="albums-outline"></ion-icon>
+        <h3>Vous examinez d'un geste</h3>
+        <p>Vos repas en attente forment une file claire. Validez d'un swipe, ou renvoyez un retour avec des tags et une note personnelle.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">03</span>
+        <ion-icon name="chatbubbles-outline"></ion-icon>
+        <h3>Le lien continue</h3>
+        <p>Vos retours arrivent dans un fil unique, celui de votre relation. Le client sait où il en est sans attendre la prochaine séance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Bande photo full-bleed — le langage des pills, sur de la vraie photo ══ -->
+<div class="photo-band" aria-hidden="true">
+  <div class="band-track">
+    <div class="band-cell">
+      <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
+      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Déjeuner · 12:40</span>
+      <span class="band-pill p-status ok"><ion-icon name="checkmark-circle"></ion-icon>Validé</span>
+    </div>
+    <div class="band-cell">
+      <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
+      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Petit-déj · 08:15</span>
+      <span class="band-pill p-status wait"><ion-icon name="time-outline"></ion-icon>En attente</span>
+    </div>
+    <div class="band-cell">
+      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
+      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Dîner · 19:52</span>
+      <span class="band-pill p-tag">Bon choix</span>
+    </div>
+    <div class="band-cell">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
+      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Déjeuner · 13:05</span>
+      <span class="band-pill p-status ok"><ion-icon name="checkmark-circle"></ion-icon>Validé</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ Produit (section espresso immersive) ══ -->
+<section id="produit" class="dark-section">
+  <div class="container dark-inner">
+    <div class="dark-copy reveal">
+      <p class="eyebrow">Le produit</p>
+      <h2>Le suivi, tel que vos clients le vivent.</h2>
+      <p>Un canal privé et bienveillant entre vous et chaque client. Les repas, vos validations et vos notes vivent au même endroit — pas d'applis éparpillées, pas de captures WhatsApp.</p>
+      <div class="dark-points">
+        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Statuts clairs, sans anxiété : en attente, validé, à revoir</span></div>
+        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Des tags de feedback réutilisables, plus une note libre</span></div>
+        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Tous vos clients, chacun son fil, sur votre téléphone</span></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="phone-zone" aria-hidden="true">
+      <span class="chip chip-pending"><ion-icon name="time-outline"></ion-icon>2 repas en attente</span>
+      <span class="chip chip-reply"><ion-icon name="chatbubble-outline"></ion-icon>Marie répond…</span>
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="chat-header">
+            <span class="avatar">M</span>
+            <div>
+              <strong>Marie · votre coach</strong>
+              <small>Suivi nutrition</small>
+            </div>
+          </div>
+          <div class="chat-body">
+            <div class="bubble me">
+              <div class="meal-bubble">
+                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=480&q=70" alt="" loading="lazy" />
+                <div class="mb-meta">
+                  <span>Saumon grillé, riz complet</span>
+                  <span class="badge ok"><span class="dot"></span>Validé</span>
+                </div>
+              </div>
+            </div>
+            <div class="bubble">
+              <div class="fb-bubble">
+                <div class="fb-tags">
+                  <span class="fb-tag">Bon choix</span>
+                  <span class="fb-tag">Plus de légumes</span>
+                </div>
+                <p>Très bon choix. Garde cette base pour tes déjeuners de semaine, ajoute juste une portion de légumes verts.</p>
+                <small>Marie · 13:04</small>
+              </div>
+            </div>
+            <div class="bubble me">
+              <div class="meal-bubble is-pending">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=480&q=70" alt="" loading="lazy" />
+                <div class="mb-meta">
+                  <span>Yaourt grec, fruits rouges</span>
+                  <span class="badge wait"><span class="dot"></span>En attente</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Pour votre cabinet ══ -->
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="eyebrow">Pour votre cabinet</p>
+      <h2>Pensé pour la réalité d'un coach qui suit plusieurs clients.</h2>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <ion-icon name="layers-outline"></ion-icon>
+        <h3>Une file d'attente, pas une to-do</h3>
+        <p>Les repas à examiner arrivent dans une seule file, triés pour vous. Cinq minutes entre deux séances suffisent à tout traiter.</p>
+      </div>
+      <div class="card reveal">
+        <ion-icon name="people-outline"></ion-icon>
+        <h3>Tous vos clients, un seul endroit</h3>
+        <p>Chaque client a son fil, son historique et ses statuts. Vous retrouvez le contexte d'un coup d'œil avant chaque séance.</p>
+      </div>
+      <div class="card reveal">
+        <ion-icon name="heart-outline"></ion-icon>
+        <h3>Des retours qui restent</h3>
+        <p>Vos notes ne se perdent pas dans une conversation. Elles restent attachées au repas, consultables quand le client en a besoin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Manifesto / voix ══ -->
+<section class="manifesto">
+  <div class="container manifesto-inner reveal">
+    <p class="eyebrow">Notre conviction</p>
+    <h2 style="margin-top: var(--space-4);">Pas de chiffres. Pas de graphiques. <em>Une relation.</em></h2>
+    <p class="manifesto-lede">Un repas ne se résume pas à des données. NutriNeo ne note rien, ne classe personne et ne transforme pas l'alimentation en tableau de bord. L'app fait une seule chose : mettre ce que mange votre client sous les yeux de la seule personne capable d'en juger — vous.</p>
+  </div>
+</section>
+
+<!-- ══ CTA final ══ -->
+<section id="contact" class="cta-final">
+  <div class="container cta-inner reveal">
+    <h2>Prêt à voir NutriNeo en action ?</h2>
+    <p>Écrivez-nous en deux lignes — on vous montre l'app avec vos cas concrets, et on répond à toutes vos questions.</p>
+    <a class="btn btn-inverse" href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20en%20nutrition%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A">
+      Demander une démo<ion-icon name="arrow-forward"></ion-icon>
+    </a>
+    <p class="cta-sub">Ou directement : <a href="mailto:ramedjahed@yahoo.com">ramedjahed@yahoo.com</a></p>
+  </div>
+</section>
+
+<!-- ══ Footer ══ -->
+<footer>
+  <div class="container footer-inner">
+    <a class="wordmark" href="#"><em>N</em>utri<em>N</em>eo</a>
+    <p>© 2026 NutriNeo — Le suivi nutrition, entre vos séances.</p>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll — restrained, one-shot
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    }
+  }, { threshold: 0.18 });
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  // ── Hero swipe deck — live review loop ──────────────────
+  const MEALS = [
+    { img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=680&q=80',
+      pill: 'Déjeuner · 12:40', title: 'Bowl quinoa, avocat et légumes rôtis', sub: 'Camille · aujourd’hui', who: 'Camille' },
+    { img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=680&q=80',
+      pill: 'Dîner · 19:52', title: 'Saumon grillé, riz complet', sub: 'Thomas · aujourd’hui', who: 'Thomas' },
+    { img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=680&q=80',
+      pill: 'Petit-déj · 08:15', title: 'Yaourt grec, fruits rouges', sub: 'Léa · aujourd’hui', who: 'Léa' },
+    { img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=680&q=80',
+      pill: 'Déjeuner · 13:05', title: 'Poulet rôti, patate douce', sub: 'Hugo · aujourd’hui', who: 'Hugo' },
+  ];
+
+  const deck = document.getElementById('deck');
+  const zone = document.getElementById('deckZone');
+  const queueCount = document.getElementById('queueCount');
+  const sentLabel = document.getElementById('sentLabel');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const cardHTML = (m) => `
+    <img src="${m.img}" alt="" />
+    <div class="meal-scrim"></div>
+    <span class="meal-pill"><ion-icon name="restaurant-outline"></ion-icon>${m.pill}</span>
+    <div class="meal-caption">
+      <strong>${m.title}</strong>
+      <small>${m.sub}</small>
+    </div>
+    <span class="stamp"><ion-icon name="checkmark"></ion-icon>VALIDÉ</span>`;
+
+  // Build the 3-card stack
+  let next = 0;
+  const cards = [0, 1, 2].map((pos) => {
+    const el = document.createElement('div');
+    el.className = `meal-card pos-${pos}`;
+    el.innerHTML = cardHTML(MEALS[next]);
+    el.dataset.who = MEALS[next].who;
+    next = (next + 1) % MEALS.length;
+    deck.appendChild(el);
+    return el;
+  });
+
+  if (!reduced) {
+    let stack = cards.slice();
+    let queue = 3;
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    async function cycle() {
+      const front = stack[0];
+      // 1 · thumb appears, card follows the drag
+      zone.classList.add('swiping');
+      await wait(250);
+      front.classList.add('dragging');
+      await wait(950);
+      // 2 · threshold crossed — VALIDÉ stamp pops
+      front.classList.add('stamped');
+      await wait(750);
+      // 3 · release — fling off, promote the stack
+      zone.classList.remove('swiping');
+      front.classList.remove('dragging');
+      front.classList.add('fly');
+      stack[1].className = 'meal-card pos-0';
+      stack[2].className = 'meal-card pos-1';
+      sentLabel.textContent = `Repas validé · ${front.dataset.who}`;
+      queue = queue === 1 ? 3 : queue - 1;
+      queueCount.textContent = queue;
+      await wait(600);
+      // 4 · recycle the flown card to the back with the next meal
+      front.classList.add('snap');
+      front.classList.remove('fly', 'stamped');
+      front.className = 'meal-card snap pos-2';
+      const m = MEALS[next];
+      front.innerHTML = cardHTML(m);
+      front.dataset.who = m.who;
+      next = (next + 1) % MEALS.length;
+      front.getBoundingClientRect(); // flush so pos-2 applies without transition
+      front.classList.remove('snap');
+      stack = [stack[1], stack[2], front];
+      // 5 · settle, then go again
+      await wait(2400);
+      cycle();
+    }
+
+    const deckIO = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        deckIO.disconnect();
+        setTimeout(cycle, 900);
+      }
+    }, { threshold: 0.5 });
+    deckIO.observe(deck);
+  }
+</script>
+
+</body>
+</html>

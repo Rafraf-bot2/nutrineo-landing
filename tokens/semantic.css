@@ -1,0 +1,47 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Semantic aliases · "Athletic Editorial"
+   Reference these in components, never raw primitives.
+   ────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Brand / primary action ── */
+  --color-primary:          var(--terracotta-800);
+  --color-primary-hover:    var(--terracotta-700);
+  --color-primary-active:   var(--terracotta-600);
+  --color-primary-contrast: var(--color-ink-inverse);
+
+  /* ── Surfaces ── */
+  --surface-canvas: var(--color-canvas);
+  --surface-card:   var(--color-surface);
+  --surface-subtle: var(--color-surface-subtle);
+  --surface-ink:    var(--color-ink);       /* inverted surfaces (camera, immersive) */
+
+  /* ── Text ── */
+  --text-primary:   var(--color-ink);
+  --text-strong:    var(--color-ink-strong);
+  --text-secondary: var(--color-ink-subtle);
+  --text-disabled:  var(--color-ink-disabled);
+  --text-inverse:   var(--color-ink-inverse);
+  --text-brand:     var(--terracotta-800);
+
+  /* ── Borders ── */
+  --border-default: var(--color-border);
+  --border-strong:  var(--color-border-strong);
+  --border-focus:   var(--terracotta-800);
+
+  /* ── Glass (floating chrome over scene content only) ── */
+  --glass-fill:   rgba(255, 251, 247, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.55);
+
+  /* ── Meal status (EN ATTENTE / VALIDÉ / À REVOIR) ── */
+  --status-pending-bg:   var(--accent-amber-light);
+  --status-pending-fg:   var(--accent-amber-dark);
+  --status-pending-dot:  var(--accent-amber);
+
+  --status-approved-bg:  var(--status-valide-light);
+  --status-approved-fg:  var(--status-valide);
+  --status-approved-dot: var(--status-valide);
+
+  --status-rejected-bg:  var(--accent-coral-light);
+  --status-rejected-fg:  var(--accent-coral-dark);
+  --status-rejected-dot: var(--accent-coral);
+}

@@ -1,0 +1,14 @@
+/* ──────────────────────────────────────────────────────────────
+   NutriNeo — Corner radius
+   Soft but not bubbly. Mirrors client/src/theme/radii.ts.
+   ────────────────────────────────────────────────────────────── */
+:root {
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   10px;  /* inputs, thumbnails  */
+  --radius-lg:   14px;  /* buttons, cards      */
+  --radius-xl:   20px;  /* hero cards, sheets  */
+  --radius-2xl:  28px;  /* swipe cards, modals */
+  --radius-pill: 44px;  /* tags, badges        */
+  --radius-full: 9999px;/* avatars, dots       */
+}
