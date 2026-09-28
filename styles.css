@@ -1,6 +1,6 @@
 /* ──────────────────────────────────────────────────────────────
-   NutriNeo Design System — global entry point
-   Consumers link THIS file only. Import list — no rules here.
+   NutriNeo Design System · global entry point
+   Consumers link THIS file only. Import list · no rules here.
    ────────────────────────────────────────────────────────────── */
 @import url('./tokens/fonts.css');
 @import url('./tokens/colors.css');

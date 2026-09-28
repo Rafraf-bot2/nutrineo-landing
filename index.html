@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>document.documentElement.classList.add('js');</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>NutriNeo — Le suivi nutrition, entre vos séances</title>
+<title>NutriNeo · Le suivi nutrition, entre vos séances</title>
 <meta name="description" content="NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d'un geste, avec un retour qui compte." />
 <link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="styles.css" />
-<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js"></script>
 <style>
   /* ── Base ─────────────────────────────────────────────── */
   *, *::before, *::after { box-sizing: border-box; }
@@ -28,11 +29,38 @@
 
   .container { max-width: 1120px; margin: 0 auto; padding: 0 var(--space-6); }
 
+  /* ── Icons · inline sprite, sized by font-size like the old web component ── */
+  .icon { width: 1em; height: 1em; flex-shrink: 0; fill: currentColor; display: inline-block; vertical-align: middle; }
+  .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+  /* ── Text links · underline thickens on hover ──────── */
+  main a:not(.btn), .footer-links a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; transition: text-decoration-thickness .12s ease; }
+  main a:not(.btn):hover, .footer-links a:hover { text-decoration-thickness: 2px; }
+  @media (pointer: coarse) {
+    .nav .btn, .toggle-btn { min-height: 44px; }
+    .footer-links a, .wordmark, .skip-link { display: inline-flex; align-items: center; min-height: 44px; }
+  }
+
+  /* ── Keyboard & screen readers ──────────────────────── */
+  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 4px; }
+  .dark-section :focus-visible, .cta-final :focus-visible { outline-color: var(--color-ink-inverse); }
+  .skip-link {
+    position: absolute; left: var(--space-4); top: -60px; z-index: 100;
+    background: var(--color-ink); color: var(--color-ink-inverse);
+    padding: var(--space-3) var(--space-4); border-radius: var(--radius-md);
+    font: var(--weight-semibold) var(--text-small)/1 var(--font-sans);
+  }
+  .skip-link:focus { top: var(--space-4); }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
   /* ── Reveal on scroll (restrained) ────────────────────── */
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
-  .reveal.is-in { opacity: 1; transform: none; }
+  .js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
+  .js .reveal.is-in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; transition: none; }
+    .js .reveal { opacity: 1; transform: none; transition: none; }
     html { scroll-behavior: auto; }
   }
 
@@ -51,7 +79,7 @@
   .btn-primary:hover { background: var(--color-primary-hover); }
   .btn-ghost { border-color: var(--border-strong); color: var(--text-primary); background: var(--surface-card); }
   .btn-ghost:hover { background: var(--surface-subtle); }
-  .btn-inverse { background: var(--surface-canvas); color: var(--terracotta-800); }
+  .btn-inverse { background: var(--surface-canvas); color: var(--color-primary); }
   .btn-inverse:hover { opacity: .92; }
 
   .eyebrow {
@@ -69,7 +97,7 @@
   }
   .wordmark em { font-style: normal; color: var(--terracotta-800); }
 
-  /* ── Nav — frosted glass (GlassSurface) ───────────────── */
+  /* ── Nav · frosted glass (GlassSurface) ───────────────── */
   .nav {
     position: sticky; top: 0; z-index: 50;
     background: var(--glass-fill);
@@ -91,7 +119,7 @@
   .nav .btn { padding: 10px var(--space-5); font-size: var(--text-small); }
   @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
 
-  /* ── Hero — aurora canvas (AuroraBackground) ──────────── */
+  /* ── Hero · aurora canvas (AuroraBackground) ──────────── */
   .hero { position: relative; overflow: hidden; }
   .hero::before, .hero::after {
     content: '';
@@ -130,6 +158,7 @@
     padding-block: var(--space-20) var(--space-24);
   }
   .hero h1 {
+    margin-top: var(--space-4);
     font: var(--weight-extrabold) clamp(38px, 5vw, 58px)/1.04 var(--font-display);
     letter-spacing: -0.032em;
     color: var(--text-strong);
@@ -148,7 +177,8 @@
     color: var(--text-secondary);
   }
 
-  /* ── Hero swipe deck — live review loop ───────────────── */
+  /* ── Hero swipe deck · live review loop ───────────────── */
+  html:not(.js) .deck-zone { display: none; }
   .deck-zone { position: relative; width: 100%; max-width: 340px; margin: 0 auto; }
   .deck { position: relative; height: 460px; }
   .meal-card {
@@ -161,14 +191,14 @@
   .meal-card.pos-0 { transform: none; z-index: 3; box-shadow: var(--shadow-lg); }
   .meal-card.pos-1 { transform: scale(.94) translateY(20px) rotate(-3deg); z-index: 2; box-shadow: var(--shadow-sm); }
   .meal-card.pos-2 { transform: scale(.88) translateY(40px) rotate(2.5deg); z-index: 1; box-shadow: var(--shadow-xs); opacity: .92; }
-  /* drag phase — the card follows an invisible thumb */
+  /* drag phase · the card follows an invisible thumb */
   .meal-card.pos-0.dragging { transform: translateX(46px) rotate(5deg); transition-duration: .7s; }
-  /* release — flies off right, like the app's approve fling */
+  /* release · flies off right, like the app's approve fling */
   .meal-card.fly { transform: translateX(140%) rotate(13deg) !important; opacity: 0; transition-duration: .6s; }
   .meal-card.snap { transition: none; }
   .meal-card img { width: 100%; height: 100%; object-fit: cover; }
 
-  /* simulated thumb — gesture cue */
+  /* simulated thumb · gesture cue */
   .thumb {
     position: absolute; z-index: 6;
     left: 38%; bottom: 26%;
@@ -189,7 +219,7 @@
     100% { opacity: 0; transform: translateX(84px) scale(.9); }
   }
 
-  /* floating glass chips — product-true details */
+  /* floating glass chips · product-true details */
   .chip {
     position: absolute; z-index: 7;
     display: inline-flex; align-items: center; gap: var(--space-2);
@@ -204,18 +234,18 @@
     color: var(--text-primary);
     white-space: nowrap;
   }
-  .chip ion-icon { font-size: 17px; }
+  .chip .icon { font-size: 17px; }
   .chip .chip-count {
     display: inline-flex; align-items: center; justify-content: center;
     min-width: 20px; height: 20px; padding: 0 5px;
     border-radius: var(--radius-full);
-    background: var(--terracotta-800); color: var(--color-ink-inverse);
+    background: var(--color-primary); color: var(--color-ink-inverse);
     font: var(--weight-bold) 11px/1 var(--font-sans);
   }
   .chip-queue { top: 6%; left: -18%; animation: chipFloat 7s ease-in-out infinite alternate; }
-  .chip-queue ion-icon { color: var(--terracotta-800); }
+  .chip-queue .icon { color: var(--terracotta-800); }
   .chip-sent { bottom: -20px; right: -16%; animation: chipFloat 8s ease-in-out 1.2s infinite alternate-reverse; }
-  .chip-sent ion-icon { color: var(--status-valide); }
+  .chip-sent .icon { color: var(--status-valide); }
   @keyframes chipFloat {
     from { transform: translateY(-4px); }
     to   { transform: translateY(6px); }
@@ -254,7 +284,7 @@
     font: var(--weight-medium) var(--text-small)/var(--leading-small) var(--font-sans);
     opacity: .82;
   }
-  /* Stamp "VALIDÉ" — espresso, calm & settled (app semantics: the check
+  /* Stamp "VALIDÉ" · espresso, calm & settled (app semantics: the check
      carries the meaning, not a loud accent color) */
   .stamp {
     position: absolute; top: 42%; left: 50%;
@@ -299,27 +329,26 @@
   }
 
   /* ── How it works ─────────────────────────────────────── */
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6); }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-10); }
   .step {
     border-top: 1px solid var(--border-default);
     padding-top: var(--space-6);
   }
   .step .num {
     display: block;
-    font: var(--weight-semibold) var(--text-caption)/1 var(--font-sans);
-    letter-spacing: var(--tracking-caption);
-    color: var(--text-secondary);
+    font: var(--weight-extrabold) 64px/1 var(--font-display);
+    letter-spacing: -0.04em;
+    color: var(--text-strong);
   }
-  .step ion-icon { display: block; font-size: 28px; color: var(--terracotta-800); margin-top: var(--space-5); }
   .step h3 {
     font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display);
     letter-spacing: var(--tracking-h3);
-    margin-top: var(--space-3);
+    margin-top: var(--space-6);
   }
   .step p { margin-top: var(--space-3); color: var(--text-secondary); }
   @media (max-width: 880px) { .steps { grid-template-columns: 1fr; } }
 
-  /* ── Photo band — full-bleed strip, glass pills over it ── */
+  /* ── Photo band · full-bleed strip, glass pills over it ── */
   .photo-band { padding: 0; position: relative; }
   .band-track {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -348,18 +377,18 @@
     color: var(--color-ink);
     white-space: nowrap;
   }
-  .band-pill ion-icon { font-size: 14px; }
+  .band-pill .icon { font-size: 14px; }
   .band-pill.p-time { top: var(--space-5); left: var(--space-5); }
   .band-pill.p-status { bottom: var(--space-5); right: var(--space-5); }
-  .band-pill.p-status.ok ion-icon { color: var(--status-valide); }
-  .band-pill.p-status.wait ion-icon { color: var(--accent-amber); }
+  .band-pill.p-status.ok .icon { color: var(--status-valide); }
+  .band-pill.p-status.wait .icon { color: var(--accent-amber); }
   .band-pill.p-tag { bottom: var(--space-5); left: var(--space-5); color: var(--terracotta-700); }
   @media (max-width: 880px) {
     .band-track { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); height: 480px; }
     .band-cell:nth-child(n+5) { display: none; }
   }
 
-  /* ── Dark product section — espresso immersive ────────── */
+  /* ── Dark product section · espresso immersive ────────── */
   .dark-section {
     background: var(--color-ink);
     color: var(--text-inverse);
@@ -384,19 +413,9 @@
   }
   .dark-points { margin-top: var(--space-8); display: grid; gap: var(--space-4); }
   .dark-point { display: flex; gap: var(--space-3); align-items: flex-start; color: rgba(252, 251, 249, .88); }
-  .dark-point ion-icon { font-size: 20px; color: var(--terracotta-400); flex-shrink: 0; margin-top: 2px; }
+  .dark-point .icon { font-size: 20px; color: rgba(252, 251, 249, .5); flex-shrink: 0; margin-top: 2px; }
 
-  /* Phone mockup — the client's thread, as in the app */
-  .phone-zone { position: relative; width: fit-content; margin: 0 auto; }
-  .phone-zone .chip { position: absolute; }
-  .phone-zone .chip-pending { top: -16px; left: -36px; animation: chipFloat 7.5s ease-in-out .6s infinite alternate; }
-  .phone-zone .chip-pending ion-icon { color: var(--accent-amber); }
-  .phone-zone .chip-reply { bottom: -14px; right: -42px; animation: chipFloat 8.5s ease-in-out 1.8s infinite alternate-reverse; }
-  .phone-zone .chip-reply ion-icon { color: var(--terracotta-800); }
-  @media (max-width: 1020px) {
-    .phone-zone .chip-pending { left: -10px; }
-    .phone-zone .chip-reply { right: -10px; }
-  }
+  /* Phone mockup · the coach's "Clients" tab (CoachHistoryScreen + ConversationRow) */
   .phone {
     width: 320px; margin: 0 auto;
     background: var(--surface-canvas);
@@ -405,134 +424,217 @@
     box-shadow: var(--shadow-xl), 0 0 0 1px rgba(255,255,255,.08);
   }
   .phone-screen {
+    position: relative;
+    height: 560px;
     background: var(--surface-canvas);
     border-radius: 30px; overflow: hidden;
     color: var(--text-primary);
   }
-  .chat-header {
+  .list-head { padding: var(--space-8) var(--space-5) var(--space-3); }
+  .list-head strong {
+    display: block;
+    font: var(--weight-extrabold) 28px/1.1 var(--font-display);
+    letter-spacing: -0.03em;
+    color: var(--text-strong);
+  }
+  .list-head span { display: block; margin-top: var(--space-1); font: var(--weight-medium) 13px/1.4 var(--font-sans); color: var(--terracotta-700); }
+  .client-row {
     display: flex; align-items: center; gap: var(--space-3);
-    padding: var(--space-4) var(--space-4) var(--space-3);
+    padding: var(--space-3) var(--space-5);
     border-bottom: 1px solid var(--border-default);
-    background: var(--surface-card);
   }
   .avatar {
-    width: 38px; height: 38px; border-radius: var(--radius-full);
-    background: var(--terracotta-800); color: var(--color-ink-inverse);
+    width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--surface-subtle); color: var(--text-primary);
     display: flex; align-items: center; justify-content: center;
     font: var(--weight-bold) var(--text-small)/1 var(--font-display);
-    box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--terracotta-800);
   }
-  .chat-header strong { font: var(--weight-semibold) var(--text-small)/1.2 var(--font-display); display: block; letter-spacing: -0.2px; }
-  .chat-header small {
-    font: var(--weight-semibold) 10px/1.4 var(--font-sans);
-    letter-spacing: var(--tracking-caption); text-transform: uppercase;
+  .client-row .who { flex: 1; min-width: 0; }
+  .client-row .who strong { display: block; font: var(--weight-semibold) var(--text-small)/1.3 var(--font-sans); }
+  .pending {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-top: var(--space-1);
+    padding: 3px var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--status-pending-bg); color: var(--status-pending-fg);
+    font: var(--weight-semibold) var(--text-micro)/1.3 var(--font-sans);
+  }
+  .pending::before { content: ''; width: 6px; height: 6px; border-radius: var(--radius-full); background: var(--status-pending-dot); }
+  .uptodate {
+    display: flex; align-items: center; gap: var(--space-1);
+    margin-top: var(--space-1);
+    font: var(--weight-regular) var(--text-caption)/1.3 var(--font-sans);
     color: var(--text-secondary);
   }
-  .chat-body { padding: var(--space-4); display: grid; gap: var(--space-3); background: var(--surface-canvas); }
-  .bubble { max-width: 82%; }
-  .bubble.me { justify-self: end; }
-  /* MealBubble — status accent bar on the left, like MealCard */
-  .meal-bubble {
-    position: relative;
-    background: var(--surface-card);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-xs);
-  }
-  .meal-bubble::before {
-    content: '';
-    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--accent, var(--status-valide));
-    z-index: 1;
-  }
-  .meal-bubble.is-pending { --accent: var(--accent-amber); }
-  .meal-bubble img { height: 110px; width: 100%; object-fit: cover; }
-  .meal-bubble .mb-meta { padding: var(--space-2) var(--space-3) var(--space-3); }
-  .mb-meta span:not(.badge):not(.dot) { font: var(--weight-medium) 12px/1.4 var(--font-sans); color: var(--text-primary); display: block; }
-  .badge {
-    display: inline-flex; align-items: center; gap: 5px;
+  .uptodate .icon { font-size: 13px; color: var(--status-valide); }
+  .client-row img { width: 46px; height: 46px; flex-shrink: 0; border-radius: var(--radius-md); object-fit: cover; }
+  /* floating tab bar · glass over the scrolling list, like FloatingTabBar */
+  .tabbar {
+    position: absolute; left: var(--space-4); right: var(--space-4); bottom: var(--space-4);
+    display: flex; justify-content: space-around;
+    padding: 6px;
     border-radius: var(--radius-pill);
-    padding: 3px 9px;
-    font: var(--weight-semibold) 9px/1.4 var(--font-sans);
-    letter-spacing: var(--tracking-caption); text-transform: uppercase;
-    margin-top: 6px;
+    background: var(--glass-fill);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-md);
   }
-  .badge .dot { width: 5px; height: 5px; border-radius: var(--radius-full); }
-  .badge.ok  { background: var(--status-approved-bg); color: var(--status-approved-fg); }
-  .badge.ok .dot { background: var(--status-approved-dot); }
-  .badge.wait { background: var(--status-pending-bg); color: var(--status-pending-fg); }
-  .badge.wait .dot { background: var(--status-pending-dot); }
-  .fb-bubble {
-    background: var(--terracotta-100);
-    border-radius: var(--radius-lg);
-    padding: var(--space-3);
-  }
-  .fb-bubble .fb-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
-  .fb-tag {
-    background: var(--surface-card);
-    border: 1px solid var(--terracotta-200);
-    color: var(--terracotta-700);
+  .tabbar span {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px var(--space-3);
     border-radius: var(--radius-pill);
-    padding: 3px 9px;
-    font: var(--weight-semibold) 9px/1.4 var(--font-sans);
-    letter-spacing: .04em; text-transform: uppercase;
+    font: var(--weight-semibold) var(--text-micro)/1.2 var(--font-sans);
+    color: var(--text-secondary);
   }
-  .fb-bubble p { font: var(--weight-regular) 12px/1.5 var(--font-sans); color: var(--color-ink); }
-  .fb-bubble small {
-    display: block; margin-top: 5px;
-    font: var(--weight-medium) 10px/1.4 var(--font-sans);
-    color: var(--terracotta-700);
+  .tabbar span.is-active { color: var(--text-strong); background: rgba(255, 255, 255, .75); }
+  .tabbar .icon { font-size: 18px; }
+  .pending, .uptodate { white-space: nowrap; }
+  @media (max-width: 880px) {
+    .client-row { padding-inline: var(--space-4); }
+    .client-row img { width: 40px; height: 40px; }
   }
   @media (max-width: 880px) {
     .dark-inner { grid-template-columns: 1fr; gap: var(--space-12); }
-    .phone { width: 290px; }
+    .phone { width: 304px; }
   }
 
-  /* ── Benefits cards ───────────────────────────────────── */
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-5); }
-  .card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-xl);
-    padding: var(--space-8);
-    box-shadow: var(--shadow-sm);
+  /* ── Tarifs · editorial columns, hairline rules ───────── */
+  .pricing-head {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: var(--space-8); flex-wrap: wrap;
+    margin-bottom: var(--space-16);
   }
-  .card ion-icon { font-size: 26px; color: var(--terracotta-800); }
-  .card h3 {
-    font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display);
-    letter-spacing: var(--tracking-h4);
-    margin-top: var(--space-4);
-  }
-  .card p { margin-top: var(--space-3); color: var(--text-secondary); font-size: var(--text-small); line-height: var(--leading-small); }
-  @media (max-width: 880px) { .cards { grid-template-columns: 1fr; } }
+  .pricing-head .section-head { margin-bottom: 0; }
 
-  /* ── Manifesto / quote — oat inset ─────────────────────── */
-  .manifesto { background: var(--surface-subtle); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
-  .manifesto-inner { max-width: 760px; margin: 0 auto; text-align: center; }
-  .manifesto h2 {
-    font: var(--weight-extrabold) clamp(26px, 3.2vw, 36px)/1.18 var(--font-display);
-    letter-spacing: -0.028em;
+  .billing-toggle {
+    display: flex; width: fit-content; align-items: center; gap: 2px;
+    padding: 4px;
+    background: var(--glass-fill);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-md);
+  }
+  .toggle-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: none; background: transparent; cursor: pointer;
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    font: var(--weight-semibold) var(--text-small)/1 var(--font-sans);
+    color: var(--text-secondary);
+    transition: background-color .16s ease, color .16s ease;
+  }
+  .toggle-btn.is-active { background: var(--color-ink); color: var(--color-ink-inverse); }
+  .save-badge {
+    background: var(--terracotta-100); color: var(--terracotta-900);
+    border-radius: var(--radius-pill);
+    padding: 3px 8px;
+    font: var(--weight-bold) var(--text-micro)/1 var(--font-sans);
+  }
+
+  .plans { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--space-20); align-items: stretch; }
+  .plan { position: relative; display: flex; flex-direction: column; }
+  /* divider sits in the middle of the gap so all three columns keep equal widths */
+  .plan + .plan::before {
+    content: '';
+    position: absolute; top: 0; bottom: 0; left: calc(var(--space-20) / -2);
+    border-left: 1px solid var(--border-default);
+  }
+
+  .plan-name {
+    font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display);
+    letter-spacing: var(--tracking-h3);
     color: var(--text-strong);
   }
-  .manifesto h2 em { font-style: normal; color: var(--terracotta-800); }
+  .plan-tagline { margin-top: var(--space-2); color: var(--text-secondary); font-size: var(--text-small); line-height: var(--leading-small); }
+  .plan-price { margin-top: var(--space-6); min-height: 88px; }
+  .price-row { display: none; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+  .price-row.is-shown { display: flex; }
+  .price-amount {
+    font: var(--weight-extrabold) 44px/1 var(--font-display);
+    letter-spacing: -0.03em;
+    color: var(--text-strong);
+  }
+  .price-suffix { font: var(--weight-medium) var(--text-small)/1 var(--font-sans); color: var(--text-secondary); }
+  .price-note { display: block; width: 100%; margin-top: 6px; font-size: var(--text-small); color: var(--text-secondary); }
+  .plan-cap {
+    margin-top: var(--space-4);
+    display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
+    font: var(--weight-semibold) var(--text-caption)/1 var(--font-sans);
+    letter-spacing: var(--tracking-caption); text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .plan-cap .icon { font-size: 15px; color: var(--text-secondary); }
+  .plans-shared {
+    margin-top: var(--space-16); padding-top: var(--space-8);
+    border-top: 1px solid var(--border-default);
+    display: grid; grid-template-columns: 240px 1fr; gap: var(--space-4) var(--space-10);
+  }
+  .plans-shared h3 {
+    font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display);
+    letter-spacing: var(--tracking-h4);
+  }
+  .plans-shared ul {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3) var(--space-8);
+  }
+  .plans-shared li { display: flex; gap: 10px; font-size: var(--text-small); line-height: var(--leading-small); }
+  .plans-shared li .icon { font-size: 17px; color: var(--text-primary); flex-shrink: 0; margin-top: 2px; }
+  .plans-shared p { grid-column: 2; font-size: var(--text-small); color: var(--text-secondary); }
+  @media (max-width: 880px) {
+    .plans-shared, .plans-shared ul { grid-template-columns: 1fr; }
+    .plans-shared p { grid-column: 1; }
+  }
+  .plan .btn { margin-top: var(--space-8); justify-content: center; }
+  .pricing-footnote {
+    margin-top: var(--space-16);
+    color: var(--text-secondary); font-size: var(--text-small);
+  }
+  .pricing-footnote a { color: var(--text-brand); }
+  @media (max-width: 880px) {
+    .plans { grid-template-columns: 1fr; max-width: 440px; }
+    .plan-price { min-height: 0; }
+    .plan + .plan { margin-top: var(--space-10); padding-top: var(--space-10); border-top: 1px solid var(--border-default); }
+    .plan + .plan::before { display: none; }
+  }
+
+  /* ── Manifesto / quote · oat inset ─────────────────────── */
+  .manifesto { background: var(--surface-subtle); border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
+  .manifesto-inner {
+    display: grid; grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-16); align-items: end;
+  }
+  .manifesto h2 {
+    font: var(--weight-extrabold) clamp(34px, 4.8vw, 60px)/1.02 var(--font-display);
+    letter-spacing: -0.035em;
+    color: var(--text-strong);
+  }
+  .manifesto h2 em { font-style: normal; }
   .manifesto-lede {
-    max-width: 58ch; margin: var(--space-8) auto 0;
+    max-width: 46ch;
     font: var(--weight-regular) var(--text-h4)/1.55 var(--font-sans);
     color: var(--text-secondary);
   }
+  @media (max-width: 880px) { .manifesto-inner { grid-template-columns: 1fr; gap: var(--space-8); } }
 
-  /* ── Final CTA — terracotta ───────────────────────────── */
-  .cta-final { background: var(--terracotta-800); color: var(--color-ink-inverse); }
-  .cta-inner { text-align: center; max-width: 640px; margin: 0 auto; }
+  /* ── Final CTA · terracotta ───────────────────────────── */
+  .cta-final { background: var(--color-primary); color: var(--color-ink-inverse); }
+  .cta-inner {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: var(--space-12); align-items: end;
+  }
+  .cta-copy { max-width: 560px; }
+  .cta-actions { display: grid; justify-items: start; gap: var(--space-4); }
+  @media (max-width: 880px) { .cta-inner { grid-template-columns: 1fr; gap: var(--space-8); } }
   .cta-final h2 {
     font: var(--weight-extrabold) clamp(30px, 4vw, 46px)/1.08 var(--font-display);
     letter-spacing: -0.03em;
   }
-  .cta-final p { margin-top: var(--space-5); color: rgba(252, 251, 249, .85); font-size: var(--text-h4); line-height: 1.45; }
-  .cta-final .btn { margin-top: var(--space-8); }
-  .cta-final .cta-sub { margin-top: var(--space-4); font-size: var(--text-small); color: rgba(252, 251, 249, .7); }
-  .cta-final .cta-sub a { text-decoration: underline; text-underline-offset: 3px; }
+  .cta-final p { margin-top: var(--space-5); color: var(--color-ink-inverse); font-size: var(--text-h4); line-height: 1.45; }
+  .cta-final .cta-sub { font-size: var(--text-small); color: var(--color-ink-inverse); }
 
   /* ── Footer ───────────────────────────────────────────── */
   footer { padding: var(--space-10) 0; }
@@ -541,42 +643,59 @@
     gap: var(--space-4); flex-wrap: wrap;
   }
   .footer-inner .wordmark { font-size: 16px; letter-spacing: -0.6px; }
-  .footer-inner p { font: var(--weight-regular) var(--text-caption)/1.4 var(--font-sans); color: var(--text-secondary); }
+  .footer-inner p { font: var(--weight-regular) var(--text-small)/var(--leading-small) var(--font-sans); color: var(--text-secondary); }
+  .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+  @media (max-width: 720px) { .footer-inner { flex-direction: column; align-items: flex-start; } }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-albums-outline" viewBox="0 0 512 512"><rect x="64" y="176" width="384" height="256" rx="28.87" ry="28.87" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M144 80h224M112 128h288"/></symbol>
+  <symbol id="i-arrow-forward" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="48" d="M268 112l144 144-144 144M392 256H100"/></symbol>
+  <symbol id="i-checkmark-circle-outline" viewBox="0 0 512 512"><path d="M448 256c0-106-86-192-192-192S64 150 64 256s86 192 192 192 192-86 192-192z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M352 176L217.6 336 160 272"/></symbol>
+  <symbol id="i-checkmark-circle" viewBox="0 0 512 512"><path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm108.25 138.29l-134.4 160a16 16 0 01-12 5.71h-.27a16 16 0 01-11.89-5.3l-57.6-64a16 16 0 1123.78-21.4l45.29 50.32 122.59-145.91a16 16 0 0124.5 20.58z"/></symbol>
+  <symbol id="i-checkmark" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M416 128L192 384l-96-96"/></symbol>
+  <symbol id="i-people-outline" viewBox="0 0 512 512"><path d="M402 168c-2.93 40.67-33.1 72-66 72s-63.12-31.32-66-72c-3-42.31 26.37-72 66-72s69 30.46 66 72z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M336 304c-65.17 0-127.84 32.37-143.54 95.41-2.08 8.34 3.15 16.59 11.72 16.59h263.65c8.57 0 13.77-8.25 11.72-16.59C463.85 335.36 401.18 304 336 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path d="M200 185.94c-2.34 32.48-26.72 58.06-53 58.06s-50.7-25.57-53-58.06C91.61 152.15 115.34 128 147 128s55.39 24.77 53 57.94z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M206 306c-18.05-8.27-37.93-11.45-59-11.45-52 0-102.1 25.85-114.65 76.2-1.65 6.66 2.53 13.25 9.37 13.25H154" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></symbol>
+  <symbol id="i-people" viewBox="0 0 512 512"><path d="M336 256c-20.56 0-40.44-9.18-56-25.84-15.13-16.25-24.37-37.92-26-61-1.74-24.62 5.77-47.26 21.14-63.76S312 80 336 80c23.83 0 45.38 9.06 60.7 25.52 15.47 16.62 23 39.22 21.26 63.63-1.67 23.11-10.9 44.77-26 61C376.44 246.82 356.57 256 336 256zm66-88zM467.83 432H204.18a27.71 27.71 0 01-22-10.67 30.22 30.22 0 01-5.26-25.79c8.42-33.81 29.28-61.85 60.32-81.08C264.79 297.4 299.86 288 336 288c36.85 0 71 9 98.71 26.05 31.11 19.13 52 47.33 60.38 81.55a30.27 30.27 0 01-5.32 25.78A27.68 27.68 0 01467.83 432zM147 260c-35.19 0-66.13-32.72-69-72.93-1.42-20.6 5-39.65 18-53.62 12.86-13.83 31-21.45 51-21.45s38 7.66 50.93 21.57c13.1 14.08 19.5 33.09 18 53.52-2.87 40.2-33.8 72.91-68.93 72.91zM212.66 291.45c-17.59-8.6-40.42-12.9-65.65-12.9-29.46 0-58.07 7.68-80.57 21.62-25.51 15.83-42.67 38.88-49.6 66.71a27.39 27.39 0 004.79 23.36A25.32 25.32 0 0041.72 400h111a8 8 0 007.87-6.57c.11-.63.25-1.26.41-1.88 8.48-34.06 28.35-62.84 57.71-83.82a8 8 0 00-.63-13.39c-1.57-.92-3.37-1.89-5.42-2.89z"/></symbol>
+  <symbol id="i-person-outline" viewBox="0 0 512 512"><path d="M344 144c-3.92 52.87-44 96-88 96s-84.15-43.12-88-96c-4-55 35-96 88-96s92 42 88 96z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M256 304c-87 0-175.3 48-191.64 138.6C62.39 453.52 68.57 464 80 464h352c11.44 0 17.62-10.48 15.65-21.4C431.3 352 343 304 256 304z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/></symbol>
+  <symbol id="i-restaurant-outline" viewBox="0 0 512 512"><path d="M57.49 47.74l368.43 368.43a37.28 37.28 0 010 52.72h0a37.29 37.29 0 01-52.72 0l-90-91.55a32 32 0 01-9.2-22.43v-5.53a32 32 0 00-9.52-22.78l-11.62-10.73a32 32 0 00-29.8-7.44h0a48.53 48.53 0 01-46.56-12.63l-85.43-85.44C40.39 159.68 21.74 83.15 57.49 47.74z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/><path d="M400 32l-77.25 77.25A64 64 0 00304 154.51v14.86a16 16 0 01-4.69 11.32L288 192M320 224l11.31-11.31a16 16 0 0111.32-4.69h14.86a64 64 0 0045.26-18.75L480 112M440 72l-80 80M200 368l-99.72 100.28a40 40 0 01-56.56 0h0a40 40 0 010-56.56L128 328" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></symbol>
+  <symbol id="i-time-outline" viewBox="0 0 512 512"><path d="M256 64C150 64 64 150 64 256s86 192 192 192 192-86 192-192S362 64 256 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 128v144h96"/></symbol>
+</svg>
 
-<!-- ══ Nav — frosted glass ══ -->
+<!-- ══ Nav · frosted glass ══ -->
 <nav class="nav">
   <div class="container nav-inner">
     <a class="wordmark" href="#"><em>N</em>utri<em>N</em>eo</a>
     <div class="nav-links">
       <a href="#comment">Comment ça marche</a>
       <a href="#produit">Le produit</a>
-      <a href="#contact" class="btn btn-primary">Demander une démo</a>
+      <a href="#tarifs">Tarifs</a>
+      <a href="#tarifs" class="btn btn-primary">Commencer gratuitement</a>
     </div>
   </div>
 </nav>
 
-<!-- ══ Hero — aurora canvas ══ -->
+<!-- ══ Hero · aurora canvas ══ -->
+<main id="contenu">
 <header class="hero">
   <div class="container hero-inner">
     <div>
-      <p class="eyebrow">Pour les coachs en nutrition</p>
-      <h1 style="margin-top: var(--space-4);">Vos clients photographient. Vous validez. <em>Ils progressent.</em></h1>
-      <p class="lede">NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d'un geste, avec un retour qui compte — entre les séances, là où les habitudes se construisent.</p>
+      <p class="eyebrow">Pour les coachs sportifs et nutrition</p>
+      <h1>Vos clients photographient. Vous validez. <em>Ils progressent.</em></h1>
+      <p class="lede">NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d’un geste, avec un retour qui compte. Entre les séances, là où les habitudes se construisent.</p>
       <div class="hero-ctas">
-        <a href="#contact" class="btn btn-primary">Demander une démo<ion-icon name="arrow-forward"></ion-icon></a>
-        <a href="#comment" class="btn btn-ghost">Voir comment ça marche</a>
+        <a href="#tarifs" class="btn btn-primary">Commencer gratuitement<svg class="icon" aria-hidden="true"><use href="#i-arrow-forward"/></svg></a>
+        <a href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A" class="btn btn-ghost">Demander une démo</a>
       </div>
-      <p class="hero-note">Un suivi qui tient en cinq minutes par jour, pour tous vos clients.</p>
+      <p class="hero-note">Gratuit avec votre premier client, sans carte bancaire.</p>
     </div>
 
     <div class="deck-zone" id="deckZone" aria-hidden="true">
-      <span class="chip chip-queue"><ion-icon name="albums-outline"></ion-icon>File d'attente<span class="chip-count" id="queueCount">3</span></span>
+      <span class="chip chip-queue"><svg class="icon" aria-hidden="true"><use href="#i-albums-outline"/></svg>File d’attente<span class="chip-count" id="queueCount">3</span></span>
       <div class="deck" id="deck"></div>
       <span class="thumb"></span>
-      <span class="chip chip-sent"><ion-icon name="checkmark-circle"></ion-icon><span id="sentLabel">Retour envoyé · Thomas</span></span>
+      <span class="chip chip-sent"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle"/></svg><span id="sentLabel">Retour envoyé · Thomas</span></span>
     </div>
   </div>
 </header>
@@ -585,25 +704,21 @@
 <section id="comment">
   <div class="container">
     <div class="section-head reveal">
-      <p class="eyebrow">Comment ça marche</p>
       <h2>Trois gestes, un suivi qui tient dans la journée.</h2>
     </div>
     <div class="steps">
       <div class="step reveal">
         <span class="num">01</span>
-        <ion-icon name="camera-outline"></ion-icon>
         <h3>Le client photographie son repas</h3>
-        <p>Une photo suffit. Pas de saisie, pas de portions à peser — le repas part vers vous en quelques secondes, au moment où il se vit.</p>
+        <p>Une photo suffit. Pas de saisie, pas de portions à peser : le repas part vers vous en quelques secondes, au moment où il se vit.</p>
       </div>
       <div class="step reveal">
         <span class="num">02</span>
-        <ion-icon name="albums-outline"></ion-icon>
-        <h3>Vous examinez d'un geste</h3>
-        <p>Vos repas en attente forment une file claire. Validez d'un swipe, ou renvoyez un retour avec des tags et une note personnelle.</p>
+        <h3>Vous examinez d’un geste</h3>
+        <p>Les repas en attente forment une file claire. Validez d’un swipe, ou renvoyez un retour avec des tags et une note personnelle.</p>
       </div>
       <div class="step reveal">
         <span class="num">03</span>
-        <ion-icon name="chatbubbles-outline"></ion-icon>
         <h3>Le lien continue</h3>
         <p>Vos retours arrivent dans un fil unique, celui de votre relation. Le client sait où il en est sans attendre la prochaine séance.</p>
       </div>
@@ -611,117 +726,88 @@
   </div>
 </section>
 
-<!-- ══ Bande photo full-bleed — le langage des pills, sur de la vraie photo ══ -->
+<!-- ══ Bande photo full-bleed · le langage des pills, sur de la vraie photo ══ -->
 <div class="photo-band" aria-hidden="true">
   <div class="band-track">
     <div class="band-cell">
-      <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
-      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Déjeuner · 12:40</span>
-      <span class="band-pill p-status ok"><ion-icon name="checkmark-circle"></ion-icon>Validé</span>
+      <img src="assets/meals/bowl-680.webp" alt="" loading="lazy" />
+      <span class="band-pill p-time"><svg class="icon" aria-hidden="true"><use href="#i-restaurant-outline"/></svg>Déjeuner · 12:40</span>
+      <span class="band-pill p-status ok"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle"/></svg>Validé</span>
     </div>
     <div class="band-cell">
-      <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
-      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Petit-déj · 08:15</span>
-      <span class="band-pill p-status wait"><ion-icon name="time-outline"></ion-icon>En attente</span>
+      <img src="assets/meals/petit-dej-680.webp" alt="" loading="lazy" />
+      <span class="band-pill p-time"><svg class="icon" aria-hidden="true"><use href="#i-restaurant-outline"/></svg>Petit-déj · 08:15</span>
+      <span class="band-pill p-status wait"><svg class="icon" aria-hidden="true"><use href="#i-time-outline"/></svg>En attente</span>
     </div>
     <div class="band-cell">
-      <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
-      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Dîner · 19:52</span>
+      <img src="assets/meals/saumon-680.webp" alt="" loading="lazy" />
+      <span class="band-pill p-time"><svg class="icon" aria-hidden="true"><use href="#i-restaurant-outline"/></svg>Dîner · 19:52</span>
       <span class="band-pill p-tag">Bon choix</span>
     </div>
     <div class="band-cell">
-      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=75" alt="" loading="lazy" />
-      <span class="band-pill p-time"><ion-icon name="restaurant-outline"></ion-icon>Déjeuner · 13:05</span>
-      <span class="band-pill p-status ok"><ion-icon name="checkmark-circle"></ion-icon>Validé</span>
+      <img src="assets/meals/boeuf-680.webp" alt="" loading="lazy" />
+      <span class="band-pill p-time"><svg class="icon" aria-hidden="true"><use href="#i-restaurant-outline"/></svg>Déjeuner · 13:05</span>
+      <span class="band-pill p-status ok"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle"/></svg>Validé</span>
     </div>
   </div>
 </div>
 
-<!-- ══ Produit (section espresso immersive) ══ -->
+<!-- ══ Produit · la vue du coach (section espresso) ══ -->
 <section id="produit" class="dark-section">
   <div class="container dark-inner">
     <div class="dark-copy reveal">
-      <p class="eyebrow">Le produit</p>
-      <h2>Le suivi, tel que vos clients le vivent.</h2>
-      <p>Un canal privé et bienveillant entre vous et chaque client. Les repas, vos validations et vos notes vivent au même endroit — pas d'applis éparpillées, pas de captures WhatsApp.</p>
+      <p class="eyebrow">Côté coach</p>
+      <h2>Tous vos clients, sur un seul écran.</h2>
+      <p>Chaque client a son fil privé, avec ses repas, vos validations et vos notes. Plus d’applis éparpillées ni de captures WhatsApp.</p>
       <div class="dark-points">
-        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Statuts clairs, sans anxiété : en attente, validé, à revoir</span></div>
-        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Des tags de feedback réutilisables, plus une note libre</span></div>
-        <div class="dark-point"><ion-icon name="checkmark-circle-outline"></ion-icon><span>Tous vos clients, chacun son fil, sur votre téléphone</span></div>
+        <div class="dark-point"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle-outline"/></svg><span>Les clients qui attendent un retour remontent en haut</span></div>
+        <div class="dark-point"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle-outline"/></svg><span>Cinq minutes entre deux séances suffisent à vider votre file</span></div>
+        <div class="dark-point"><svg class="icon" aria-hidden="true"><use href="#i-checkmark-circle-outline"/></svg><span>Côté client, des statuts clairs et sans anxiété : en attente, validé, à revoir</span></div>
       </div>
     </div>
-    <div class="reveal">
-      <div class="phone-zone" aria-hidden="true">
-      <span class="chip chip-pending"><ion-icon name="time-outline"></ion-icon>2 repas en attente</span>
-      <span class="chip chip-reply"><ion-icon name="chatbubble-outline"></ion-icon>Marie répond…</span>
+    <div class="reveal" aria-hidden="true">
       <div class="phone">
         <div class="phone-screen">
-          <div class="chat-header">
-            <span class="avatar">M</span>
-            <div>
-              <strong>Marie · votre coach</strong>
-              <small>Suivi nutrition</small>
-            </div>
+          <div class="list-head">
+            <strong>Clients</strong>
+            <span>3 repas à examiner</span>
           </div>
-          <div class="chat-body">
-            <div class="bubble me">
-              <div class="meal-bubble">
-                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=480&q=70" alt="" loading="lazy" />
-                <div class="mb-meta">
-                  <span>Saumon grillé, riz complet</span>
-                  <span class="badge ok"><span class="dot"></span>Validé</span>
-                </div>
-              </div>
+            <div class="client-row">
+              <span class="avatar">C</span>
+              <div class="who"><strong>Camille</strong><span class="pending">2 repas en attente</span></div>
+              <img src="assets/meals/bowl-96.webp" alt="" loading="lazy" />
             </div>
-            <div class="bubble">
-              <div class="fb-bubble">
-                <div class="fb-tags">
-                  <span class="fb-tag">Bon choix</span>
-                  <span class="fb-tag">Plus de légumes</span>
-                </div>
-                <p>Très bon choix. Garde cette base pour tes déjeuners de semaine, ajoute juste une portion de légumes verts.</p>
-                <small>Marie · 13:04</small>
-              </div>
+            <div class="client-row">
+              <span class="avatar">T</span>
+              <div class="who"><strong>Thomas</strong><span class="pending">1 repas en attente</span></div>
+              <img src="assets/meals/saumon-96.webp" alt="" loading="lazy" />
             </div>
-            <div class="bubble me">
-              <div class="meal-bubble is-pending">
-                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=480&q=70" alt="" loading="lazy" />
-                <div class="mb-meta">
-                  <span>Yaourt grec, fruits rouges</span>
-                  <span class="badge wait"><span class="dot"></span>En attente</span>
-                </div>
-              </div>
+            <div class="client-row">
+              <span class="avatar">L</span>
+              <div class="who"><strong>Léa</strong><span class="uptodate"><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>À jour · aujourd’hui</span></div>
+              <img src="assets/meals/petit-dej-96.webp" alt="" loading="lazy" />
             </div>
+            <div class="client-row">
+              <span class="avatar">H</span>
+              <div class="who"><strong>Hugo</strong><span class="uptodate"><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>À jour · hier</span></div>
+              <img src="assets/meals/boeuf-96.webp" alt="" loading="lazy" />
+            </div>
+            <div class="client-row">
+              <span class="avatar">I</span>
+              <div class="who"><strong>Inès</strong><span class="uptodate"><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>À jour · hier</span></div>
+              <img src="assets/meals/bowl-96.webp" alt="" loading="lazy" />
+            </div>
+            <div class="client-row">
+              <span class="avatar">N</span>
+              <div class="who"><strong>Nora</strong><span class="uptodate"><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>À jour · lundi</span></div>
+              <img src="assets/meals/saumon-96.webp" alt="" loading="lazy" />
+            </div>
+          <div class="tabbar">
+            <span><svg class="icon" aria-hidden="true"><use href="#i-albums-outline"/></svg>À examiner</span>
+            <span class="is-active"><svg class="icon" aria-hidden="true"><use href="#i-people"/></svg>Clients</span>
+            <span><svg class="icon" aria-hidden="true"><use href="#i-person-outline"/></svg>Profil</span>
           </div>
         </div>
-      </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ Pour votre cabinet ══ -->
-<section>
-  <div class="container">
-    <div class="section-head reveal">
-      <p class="eyebrow">Pour votre cabinet</p>
-      <h2>Pensé pour la réalité d'un coach qui suit plusieurs clients.</h2>
-    </div>
-    <div class="cards">
-      <div class="card reveal">
-        <ion-icon name="layers-outline"></ion-icon>
-        <h3>Une file d'attente, pas une to-do</h3>
-        <p>Les repas à examiner arrivent dans une seule file, triés pour vous. Cinq minutes entre deux séances suffisent à tout traiter.</p>
-      </div>
-      <div class="card reveal">
-        <ion-icon name="people-outline"></ion-icon>
-        <h3>Tous vos clients, un seul endroit</h3>
-        <p>Chaque client a son fil, son historique et ses statuts. Vous retrouvez le contexte d'un coup d'œil avant chaque séance.</p>
-      </div>
-      <div class="card reveal">
-        <ion-icon name="heart-outline"></ion-icon>
-        <h3>Des retours qui restent</h3>
-        <p>Vos notes ne se perdent pas dans une conversation. Elles restent attachées au repas, consultables quand le client en a besoin.</p>
       </div>
     </div>
   </div>
@@ -730,34 +816,107 @@
 <!-- ══ Manifesto / voix ══ -->
 <section class="manifesto">
   <div class="container manifesto-inner reveal">
-    <p class="eyebrow">Notre conviction</p>
-    <h2 style="margin-top: var(--space-4);">Pas de chiffres. Pas de graphiques. <em>Une relation.</em></h2>
-    <p class="manifesto-lede">Un repas ne se résume pas à des données. NutriNeo ne note rien, ne classe personne et ne transforme pas l'alimentation en tableau de bord. L'app fait une seule chose : mettre ce que mange votre client sous les yeux de la seule personne capable d'en juger — vous.</p>
+    <h2>Pas de chiffres. Pas de graphiques. <em>Une relation.</em></h2>
+    <p class="manifesto-lede">Un repas ne se résume pas à des données. NutriNeo ne note rien, ne classe personne et ne transforme pas l’alimentation en tableau de bord. L’app fait une seule chose : mettre ce que mange votre client sous les yeux de la seule personne capable d’en juger. Vous.</p>
+  </div>
+</section>
+
+<!-- ══ Tarifs ══ -->
+<section id="tarifs" class="pricing">
+  <div class="container">
+    <div class="pricing-head reveal">
+      <div class="section-head">
+        <h2>Vous payez selon le nombre de clients suivis.</h2>
+        <p>Gratuit avec votre premier client. Solo ou Pro quand votre suivi s’étoffe, pas avant.</p>
+      </div>
+      <div class="billing-toggle" role="group" aria-label="Cycle de facturation" id="billingToggle">
+        <button class="toggle-btn is-active" type="button" data-cycle="monthly" aria-pressed="true">Mensuel</button>
+        <button class="toggle-btn" type="button" data-cycle="annual" aria-pressed="false">Annuel<span class="save-badge">2 mois offerts</span></button>
+      </div>
+    </div>
+
+    <p class="visually-hidden" aria-live="polite" id="billingStatus"></p>
+
+    <div class="plans">
+      <div class="plan reveal">
+        <h3 class="plan-name">Découverte</h3>
+        <p class="plan-tagline">Pour essayer avec votre premier client.</p>
+        <div class="plan-price">
+          <div class="price-row is-shown"><span class="price-amount">0 €</span><span class="price-suffix">pour toujours</span><small class="price-note">Sans carte bancaire</small></div>
+        </div>
+        <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-person-outline"/></svg>1 client actif</span>
+        <a class="btn btn-primary" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">Commencer gratuitement</a>
+      </div>
+
+      <div class="plan reveal">
+        <h3 class="plan-name">Solo</h3>
+        <p class="plan-tagline">Quand vous suivez plusieurs clients en parallèle.</p>
+        <div class="plan-price">
+          <div class="price-row is-monthly is-shown"><span class="price-amount">19 €</span><span class="price-suffix">/ mois</span></div>
+          <div class="price-row is-annual"><span class="price-amount">15,83 €</span><span class="price-suffix">/ mois</span><small class="price-note">Soit 190 € facturés une fois par an</small></div>
+        </div>
+        <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-people-outline"/></svg>Jusqu’à 8 clients actifs</span>
+        <a class="btn btn-ghost" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20Solo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Solo%20m%27int%C3%A9resse.%0A%0A">Choisir Solo</a>
+      </div>
+
+      <div class="plan reveal">
+        <h3 class="plan-name">Pro</h3>
+        <p class="plan-tagline">Pour un portefeuille de clients qui grandit.</p>
+        <div class="plan-price">
+          <div class="price-row is-monthly is-shown"><span class="price-amount">39 €</span><span class="price-suffix">/ mois</span></div>
+          <div class="price-row is-annual"><span class="price-amount">32,50 €</span><span class="price-suffix">/ mois</span><small class="price-note">Soit 390 € facturés une fois par an</small></div>
+        </div>
+        <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-people-outline"/></svg>Jusqu’à 25 clients actifs</span>
+        <a class="btn btn-ghost" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20Pro&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Pro%20m%27int%C3%A9resse.%0A%0A">Choisir Pro</a>
+      </div>
+    </div>
+
+    <div class="plans-shared reveal">
+      <h3>Dans toutes les offres</h3>
+      <ul>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Repas photographiés, sans limite</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Validation d’un geste, retours avec tags et note</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Un fil privé et un historique par client</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>L’app gratuite pour vos clients, sur iPhone et Android</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Support par email</li>
+      </ul>
+      <p>Un client actif, c’est un client relié à votre compte. Seul leur nombre change d’une offre à l’autre.</p>
+      <p>Sans engagement : l’offre mensuelle se résilie à tout moment. L’annuel est remboursé en totalité si vous l’annulez dans les 30 jours.</p>
+      <p>Vos données et les photos de vos clients sont hébergées chez OVHcloud, un hébergeur français. <a href="/confidentialite/">Comment nous les traitons</a></p>
+    </div>
+
+    <p class="pricing-footnote reveal">Un studio ou une salle avec plusieurs coachs ? <a href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Studio%20%2F%20Salle">Parlons-en</a>, une offre dédiée arrive.</p>
   </div>
 </section>
 
 <!-- ══ CTA final ══ -->
 <section id="contact" class="cta-final">
   <div class="container cta-inner reveal">
-    <h2>Prêt à voir NutriNeo en action ?</h2>
-    <p>Écrivez-nous en deux lignes — on vous montre l'app avec vos cas concrets, et on répond à toutes vos questions.</p>
-    <a class="btn btn-inverse" href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20en%20nutrition%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A">
-      Demander une démo<ion-icon name="arrow-forward"></ion-icon>
-    </a>
-    <p class="cta-sub">Ou directement : <a href="mailto:ramedjahed@yahoo.com">ramedjahed@yahoo.com</a></p>
+    <div class="cta-copy">
+      <h2>Votre premier client suivi, dès aujourd’hui.</h2>
+      <p>Commencez gratuitement, sans carte bancaire. Vous passerez à Solo ou Pro quand votre suivi grandira.</p>
+    </div>
+    <div class="cta-actions">
+      <a class="btn btn-inverse" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">
+        Commencer gratuitement<svg class="icon" aria-hidden="true"><use href="#i-arrow-forward"/></svg>
+      </a>
+      <p class="cta-sub">Envie d’abord d’une démo ? <a href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A">Écrivez-nous</a></p>
+    </div>
   </div>
 </section>
+
+</main>
 
 <!-- ══ Footer ══ -->
 <footer>
   <div class="container footer-inner">
-    <a class="wordmark" href="#"><em>N</em>utri<em>N</em>eo</a>
-    <p>© 2026 NutriNeo — Le suivi nutrition, entre vos séances.</p>
+    <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><em>N</em>utri<em>N</em>eo</a>
+    <p class="footer-links"><span>© 2026 NutriNeo</span><a href="mailto:ramedjahed@yahoo.com">ramedjahed@yahoo.com</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a></p>
   </div>
 </footer>
 
 <script>
-  // Reveal on scroll — restrained, one-shot
+  // Reveal on scroll · restrained, one-shot
   const io = new IntersectionObserver((entries) => {
     for (const e of entries) {
       if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
@@ -765,15 +924,31 @@
   }, { threshold: 0.18 });
   document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-  // ── Hero swipe deck — live review loop ──────────────────
+  const billingToggle = document.getElementById('billingToggle');
+  billingToggle.addEventListener('click', (evt) => {
+    const btn = evt.target.closest('.toggle-btn');
+    if (!btn) return;
+    const annual = btn.dataset.cycle === 'annual';
+    billingToggle.querySelectorAll('.toggle-btn').forEach((b) => {
+      b.classList.toggle('is-active', b === btn);
+      b.setAttribute('aria-pressed', String(b === btn));
+    });
+    document.querySelectorAll('.price-row.is-monthly').forEach((el) => el.classList.toggle('is-shown', !annual));
+    document.querySelectorAll('.price-row.is-annual').forEach((el) => el.classList.toggle('is-shown', annual));
+    document.getElementById('billingStatus').textContent = annual
+      ? 'Prix affichés en facturation annuelle, 2 mois offerts.'
+      : 'Prix affichés en facturation mensuelle.';
+  });
+
+  // ── Hero swipe deck · live review loop ──────────────────
   const MEALS = [
-    { img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=680&q=80',
+    { img: 'assets/meals/bowl-680.webp',
       pill: 'Déjeuner · 12:40', title: 'Bowl quinoa, avocat et légumes rôtis', sub: 'Camille · aujourd’hui', who: 'Camille' },
-    { img: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=680&q=80',
+    { img: 'assets/meals/saumon-680.webp',
       pill: 'Dîner · 19:52', title: 'Saumon grillé, riz complet', sub: 'Thomas · aujourd’hui', who: 'Thomas' },
-    { img: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=680&q=80',
+    { img: 'assets/meals/petit-dej-680.webp',
       pill: 'Petit-déj · 08:15', title: 'Yaourt grec, fruits rouges', sub: 'Léa · aujourd’hui', who: 'Léa' },
-    { img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=680&q=80',
+    { img: 'assets/meals/boeuf-680.webp',
       pill: 'Déjeuner · 13:05', title: 'Poulet rôti, patate douce', sub: 'Hugo · aujourd’hui', who: 'Hugo' },
   ];
 
@@ -784,14 +959,14 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const cardHTML = (m) => `
-    <img src="${m.img}" alt="" />
+    <img src="${m.img}" alt="" loading="lazy" decoding="async" />
     <div class="meal-scrim"></div>
-    <span class="meal-pill"><ion-icon name="restaurant-outline"></ion-icon>${m.pill}</span>
+    <span class="meal-pill"><svg class="icon" aria-hidden="true"><use href="#i-restaurant-outline"/></svg>${m.pill}</span>
     <div class="meal-caption">
       <strong>${m.title}</strong>
       <small>${m.sub}</small>
     </div>
-    <span class="stamp"><ion-icon name="checkmark"></ion-icon>VALIDÉ</span>`;
+    <span class="stamp"><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>VALIDÉ</span>`;
 
   // Build the 3-card stack
   let next = 0;
@@ -810,17 +985,22 @@
     let queue = 3;
     const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
+    let visible = false, hovered = false, swipes = 0;
+    zone.addEventListener('mouseenter', () => { hovered = true; });
+    zone.addEventListener('mouseleave', () => { hovered = false; });
+
     async function cycle() {
+      while (!visible || hovered) await wait(400);
       const front = stack[0];
       // 1 · thumb appears, card follows the drag
       zone.classList.add('swiping');
       await wait(250);
       front.classList.add('dragging');
       await wait(950);
-      // 2 · threshold crossed — VALIDÉ stamp pops
+      // 2 · threshold crossed · VALIDÉ stamp pops
       front.classList.add('stamped');
       await wait(750);
-      // 3 · release — fling off, promote the stack
+      // 3 · release · fling off, promote the stack
       zone.classList.remove('swiping');
       front.classList.remove('dragging');
       front.classList.add('fly');
@@ -843,14 +1023,13 @@
       stack = [stack[1], stack[2], front];
       // 5 · settle, then go again
       await wait(2400);
-      cycle();
+      if (++swipes < MEALS.length * 2) cycle();
     }
 
+    let started = false;
     const deckIO = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        deckIO.disconnect();
-        setTimeout(cycle, 900);
-      }
+      visible = entries[0].isIntersecting;
+      if (visible && !started) { started = true; setTimeout(cycle, 900); }
     }, { threshold: 0.5 });
     deckIO.observe(deck);
   }

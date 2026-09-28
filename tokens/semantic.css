@@ -1,12 +1,13 @@
 /* ──────────────────────────────────────────────────────────────
-   NutriNeo — Semantic aliases · "Athletic Editorial"
+   NutriNeo · Semantic aliases · "Athletic Editorial"
    Reference these in components, never raw primitives.
    ────────────────────────────────────────────────────────────── */
 :root {
   /* ── Brand / primary action ── */
-  --color-primary:          var(--terracotta-800);
-  --color-primary-hover:    var(--terracotta-700);
-  --color-primary-active:   var(--terracotta-600);
+  /* 700, not the 800 brand hue: cream text on 800 is 3.87:1 (fails AA), on 700 it is 5.13:1 */
+  --color-primary:          var(--terracotta-700);
+  --color-primary-hover:    color-mix(in oklab, var(--terracotta-700) 75%, var(--terracotta-900));
+  --color-primary-active:   var(--terracotta-900);
   --color-primary-contrast: var(--color-ink-inverse);
 
   /* ── Surfaces ── */
@@ -21,7 +22,7 @@
   --text-secondary: var(--color-ink-subtle);
   --text-disabled:  var(--color-ink-disabled);
   --text-inverse:   var(--color-ink-inverse);
-  --text-brand:     var(--terracotta-800);
+  --text-brand:     var(--terracotta-700);
 
   /* ── Borders ── */
   --border-default: var(--color-border);
