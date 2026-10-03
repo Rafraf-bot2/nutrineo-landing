@@ -6,6 +6,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NutriNeo · Le suivi nutrition, entre vos séances</title>
 <meta name="description" content="NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d'un geste, avec un retour qui compte." />
+<link rel="canonical" href="https://nutrineo.fit/" />
+<meta name="theme-color" content="#FCFBF9" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="fr_FR" />
+<meta property="og:site_name" content="NutriNeo" />
+<meta property="og:url" content="https://nutrineo.fit/" />
+<meta property="og:title" content="NutriNeo · Le suivi nutrition, entre vos séances" />
+<meta property="og:description" content="Vos clients photographient. Vous validez. Ils progressent. Le suivi des repas pour les coachs sportifs et nutrition." />
+<meta property="og:image" content="https://nutrineo.fit/assets/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="NutriNeo : vos clients photographient, vous validez, ils progressent." />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="NutriNeo · Le suivi nutrition, entre vos séances" />
+<meta name="twitter:description" content="Vos clients photographient. Vous validez. Ils progressent." />
+<meta name="twitter:image" content="https://nutrineo.fit/assets/og.jpg" />
 <link rel="icon" type="image/png" href="assets/favicon.png" />
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
@@ -568,25 +584,37 @@
     color: var(--text-primary);
   }
   .plan-cap .icon { font-size: 15px; color: var(--text-secondary); }
-  .plans-shared {
-    margin-top: var(--space-16); padding-top: var(--space-8);
-    border-top: 1px solid var(--border-default);
-    display: grid; grid-template-columns: 240px 1fr; gap: var(--space-4) var(--space-10);
+  .guarantees {
+    list-style: none; margin: var(--space-12) 0 0; padding: var(--space-6) 0;
+    border-top: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-6) var(--space-20);
   }
+  .guarantees strong {
+    display: block;
+    font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display);
+    letter-spacing: var(--tracking-h4);
+    color: var(--text-strong);
+  }
+  .guarantees span { display: block; margin-top: var(--space-1); font-size: var(--text-small); line-height: var(--leading-small); color: var(--text-secondary); }
+  .plans-shared {
+    margin-top: var(--space-10);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4) var(--space-20);
+  }
+  .plans-shared ul, .plans-shared p { grid-column: 2 / span 2; }
   .plans-shared h3 {
     font: var(--weight-semibold) var(--text-h4)/var(--leading-h4) var(--font-display);
     letter-spacing: var(--tracking-h4);
   }
   .plans-shared ul {
     list-style: none; margin: 0; padding: 0;
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-3) var(--space-8);
+    display: grid; gap: var(--space-3);
   }
   .plans-shared li { display: flex; gap: 10px; font-size: var(--text-small); line-height: var(--leading-small); }
   .plans-shared li .icon { font-size: 17px; color: var(--text-primary); flex-shrink: 0; margin-top: 2px; }
-  .plans-shared p { grid-column: 2; font-size: var(--text-small); color: var(--text-secondary); }
+  .plans-shared p { font-size: var(--text-small); color: var(--text-secondary); }
   @media (max-width: 880px) {
-    .plans-shared, .plans-shared ul { grid-template-columns: 1fr; }
-    .plans-shared p { grid-column: 1; }
+    .plans-shared, .guarantees { grid-template-columns: 1fr; }
+    .plans-shared ul, .plans-shared p { grid-column: 1; }
   }
   .plan .btn { margin-top: var(--space-8); justify-content: center; }
   .pricing-footnote {
@@ -686,7 +714,7 @@
       <p class="lede">NutriNeo relie votre œil de coach au quotidien de vos clients. Chaque repas photographié, examiné d’un geste, avec un retour qui compte. Entre les séances, là où les habitudes se construisent.</p>
       <div class="hero-ctas">
         <a href="#tarifs" class="btn btn-primary">Commencer gratuitement<svg class="icon" aria-hidden="true"><use href="#i-arrow-forward"/></svg></a>
-        <a href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A" class="btn btn-ghost">Demander une démo</a>
+        <a href="mailto:contact@nutrineo.fit?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A" class="btn btn-ghost">Demander une démo</a>
       </div>
       <p class="hero-note">Gratuit avec votre premier client, sans carte bancaire.</p>
     </div>
@@ -845,7 +873,7 @@
           <div class="price-row is-shown"><span class="price-amount">0 €</span><span class="price-suffix">pour toujours</span><small class="price-note">Sans carte bancaire</small></div>
         </div>
         <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-person-outline"/></svg>1 client actif</span>
-        <a class="btn btn-primary" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">Commencer gratuitement</a>
+        <a class="btn btn-primary" href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">Commencer gratuitement</a>
       </div>
 
       <div class="plan reveal">
@@ -856,7 +884,7 @@
           <div class="price-row is-annual"><span class="price-amount">15,83 €</span><span class="price-suffix">/ mois</span><small class="price-note">Soit 190 € facturés une fois par an</small></div>
         </div>
         <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-people-outline"/></svg>Jusqu’à 8 clients actifs</span>
-        <a class="btn btn-ghost" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20Solo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Solo%20m%27int%C3%A9resse.%0A%0A">Choisir Solo</a>
+        <a class="btn btn-ghost" href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Offre%20Solo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Solo%20m%27int%C3%A9resse.%0A%0A">Choisir Solo</a>
       </div>
 
       <div class="plan reveal">
@@ -867,9 +895,15 @@
           <div class="price-row is-annual"><span class="price-amount">32,50 €</span><span class="price-suffix">/ mois</span><small class="price-note">Soit 390 € facturés une fois par an</small></div>
         </div>
         <span class="plan-cap"><svg class="icon" aria-hidden="true"><use href="#i-people-outline"/></svg>Jusqu’à 25 clients actifs</span>
-        <a class="btn btn-ghost" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20Pro&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Pro%20m%27int%C3%A9resse.%0A%0A">Choisir Pro</a>
+        <a class="btn btn-ghost" href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Offre%20Pro&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20l%27offre%20Pro%20m%27int%C3%A9resse.%0A%0A">Choisir Pro</a>
       </div>
     </div>
+
+    <ul class="guarantees reveal" aria-label="Nos engagements">
+      <li><strong>Sans engagement</strong><span>Le mensuel se résilie à tout moment. L’annuel est remboursé sous 30 jours. <a href="/cgv/">Voir les CGV</a></span></li>
+      <li><strong>Données chez OVHcloud</strong><span>Un hébergeur français. <a href="/confidentialite/">Comment nous les traitons</a></span></li>
+      <li><strong>App gratuite pour vos clients</strong><span>Sur iPhone et Android.</span></li>
+    </ul>
 
     <div class="plans-shared reveal">
       <h3>Dans toutes les offres</h3>
@@ -877,15 +911,12 @@
         <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Repas photographiés, sans limite</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Validation d’un geste, retours avec tags et note</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Un fil privé et un historique par client</li>
-        <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>L’app gratuite pour vos clients, sur iPhone et Android</li>
         <li><svg class="icon" aria-hidden="true"><use href="#i-checkmark"/></svg>Support par email</li>
       </ul>
-      <p>Un client actif, c’est un client relié à votre compte. Seul leur nombre change d’une offre à l’autre.</p>
-      <p>Sans engagement : l’offre mensuelle se résilie à tout moment. L’annuel est remboursé en totalité si vous l’annulez dans les 30 jours.</p>
-      <p>Vos données et les photos de vos clients sont hébergées chez OVHcloud, un hébergeur français. <a href="/confidentialite/">Comment nous les traitons</a></p>
+      <p>Client actif : un client relié à votre compte. Seul leur nombre change d’une offre à l’autre.</p>
     </div>
 
-    <p class="pricing-footnote reveal">Un studio ou une salle avec plusieurs coachs ? <a href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Studio%20%2F%20Salle">Parlons-en</a>, une offre dédiée arrive.</p>
+    <p class="pricing-footnote reveal">Un studio ou une salle avec plusieurs coachs ? <a href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Studio%20%2F%20Salle">Parlons-en</a>, une offre dédiée arrive.</p>
   </div>
 </section>
 
@@ -897,10 +928,10 @@
       <p>Commencez gratuitement, sans carte bancaire. Vous passerez à Solo ou Pro quand votre suivi grandira.</p>
     </div>
     <div class="cta-actions">
-      <a class="btn btn-inverse" href="mailto:ramedjahed@yahoo.com?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">
+      <a class="btn btn-inverse" href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Offre%20D%C3%A9couverte&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20d%C3%A9marrer%20avec%20l%27offre%20D%C3%A9couverte.%0A%0A">
         Commencer gratuitement<svg class="icon" aria-hidden="true"><use href="#i-arrow-forward"/></svg>
       </a>
-      <p class="cta-sub">Envie d’abord d’une démo ? <a href="mailto:ramedjahed@yahoo.com?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A">Écrivez-nous</a></p>
+      <p class="cta-sub">Envie d’abord d’une démo ? <a href="mailto:contact@nutrineo.fit?subject=Demande%20de%20d%C3%A9mo%20NutriNeo&body=Bonjour%2C%0A%0AJe%20suis%20coach%20et%20j%27aimerais%20voir%20une%20d%C3%A9mo%20de%20NutriNeo.%0A%0A">Écrivez-nous</a></p>
     </div>
   </div>
 </section>
@@ -911,7 +942,7 @@
 <footer>
   <div class="container footer-inner">
     <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><em>N</em>utri<em>N</em>eo</a>
-    <p class="footer-links"><span>© 2026 NutriNeo</span><a href="mailto:ramedjahed@yahoo.com">ramedjahed@yahoo.com</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a></p>
+    <p class="footer-links"><span>© 2026 NutriNeo</span><a href="mailto:contact@nutrineo.fit">contact@nutrineo.fit</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a><a href="/cgv/">CGV</a></p>
   </div>
 </footer>
 
