@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Votre compte · NutriNeo</title>
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/legal.css" />
+<style>
+  .account { max-width: 560px; }
+  .account h1 { margin-bottom: var(--space-8); }
+  [hidden] { display: none !important; }
+
+  .notice {
+    margin-bottom: var(--space-8); padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg); font-size: var(--text-small); line-height: var(--leading-small);
+    background: var(--surface-subtle); color: var(--text-primary);
+  }
+  .notice.is-error { background: var(--status-rejected-bg); color: var(--status-rejected-fg); }
+  .notice:empty { display: none; }
+
+  .tabs { display: flex; gap: var(--space-6); border-bottom: 1px solid var(--border-default); margin-bottom: var(--space-8); }
+  .tab {
+    padding: var(--space-3) 0; margin-bottom: -1px; border: 0; border-bottom: 2px solid transparent;
+    background: none; cursor: pointer; min-height: 44px;
+    font: var(--weight-semibold) var(--text-body)/1 var(--font-sans); color: var(--text-secondary);
+  }
+  .tab[aria-selected="true"] { color: var(--text-strong); border-bottom-color: var(--text-strong); }
+
+  form { display: grid; gap: var(--space-5); }
+  .field { display: grid; gap: var(--space-2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  label { font: var(--weight-semibold) var(--text-small)/1 var(--font-sans); color: var(--text-strong); }
+  input {
+    width: 100%; min-height: 48px; padding: 0 var(--space-4);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    background: var(--surface-card); color: var(--text-primary);
+    font: var(--weight-regular) 16px/1 var(--font-sans);
+  }
+  input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+  .hint { font-size: var(--text-small); color: var(--text-secondary); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 48px; padding: 0 var(--space-6);
+    border: 1px solid transparent; border-radius: var(--radius-lg); cursor: pointer;
+    font: var(--weight-semibold) var(--text-body)/1 var(--font-sans); text-decoration: none;
+    transition: background-color .12s ease, opacity .12s ease;
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-ghost { border-color: var(--border-strong); background: var(--surface-card); color: var(--text-primary); }
+  .btn-ghost:hover { background: var(--surface-subtle); }
+  .btn[disabled] { opacity: .55; cursor: progress; }
+  .link-btn {
+    justify-self: start; padding: 0; border: 0; background: none; cursor: pointer;
+    font: var(--weight-regular) var(--text-small)/1.4 var(--font-sans);
+    color: var(--terracotta-700); text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  .who { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4);
+    padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-default); font-size: var(--text-small); color: var(--text-secondary); }
+  .who strong { color: var(--text-strong); font-weight: var(--weight-semibold); }
+
+  .current { padding: var(--space-8) 0; border-bottom: 1px solid var(--border-default); }
+  .current .label { font-size: var(--text-small); color: var(--text-secondary); }
+  .current .plan-name {
+    margin-top: var(--space-2);
+    font: var(--weight-extrabold) clamp(28px, 5vw, 36px)/1.1 var(--font-display); letter-spacing: -0.028em; color: var(--text-strong);
+  }
+  .current p { margin-top: var(--space-1); color: var(--text-secondary); }
+  .current .plan-name + p { margin-top: var(--space-3); }
+  .current .btn { margin-top: var(--space-6); }
+
+  .choose { padding-top: var(--space-8); }
+  .choose h2 { margin: 0 0 var(--space-5); }
+  .cycle { display: flex; width: fit-content; gap: 2px; padding: 4px; margin-bottom: var(--space-6);
+    border: 1px solid var(--border-default); border-radius: var(--radius-pill); }
+  .cycle button {
+    min-height: 40px; padding: 0 var(--space-5); border: 0; border-radius: var(--radius-pill); cursor: pointer;
+    background: transparent; color: var(--text-secondary); font: var(--weight-semibold) var(--text-small)/1 var(--font-sans);
+  }
+  .cycle button[aria-pressed="true"] { background: var(--color-ink); color: var(--color-ink-inverse); }
+  .offer { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: var(--space-2) var(--space-6);
+    padding: var(--space-6) 0; border-top: 1px solid var(--border-default); }
+  .offer:last-child { border-bottom: 1px solid var(--border-default); }
+  .offer h3 { margin: 0; font: var(--weight-semibold) var(--text-h3)/var(--leading-h3) var(--font-display); letter-spacing: var(--tracking-h3); }
+  .offer .meta { grid-column: 1; font-size: var(--text-small); color: var(--text-secondary); }
+  .offer .btn { grid-column: 2; grid-row: 1 / span 2; }
+  .offer.is-wanted h3::after { content: " · choisie sur le site"; font: var(--weight-regular) var(--text-small)/1 var(--font-sans); color: var(--text-secondary); }
+
+  @media (max-width: 520px) {
+    .field-row { grid-template-columns: 1fr; }
+    .offer { grid-template-columns: 1fr; }
+    .offer .btn { grid-column: 1; grid-row: auto; margin-top: var(--space-3); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="legal-nav">
+  <div class="legal-container">
+    <a class="wordmark" href="/"><em>N</em>utri<em>N</em>eo</a>
+  </div>
+</nav>
+
+<main class="legal-container legal account">
+  <h1>Votre compte coach</h1>
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+
+  <!-- ── Connexion / inscription ── -->
+  <section id="auth" hidden>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-signin" aria-controls="signin" aria-selected="true" type="button">Se connecter</button>
+      <button class="tab" role="tab" id="tab-signup" aria-controls="signup" aria-selected="false" type="button">Créer un compte</button>
+    </div>
+
+    <form id="signin" role="tabpanel" aria-labelledby="tab-signin" novalidate>
+      <div class="field">
+        <label for="si-email">Email</label>
+        <input id="si-email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="si-password">Mot de passe</label>
+        <input id="si-password" name="password" type="password" autocomplete="current-password" required />
+      </div>
+      <button class="btn btn-primary" type="submit">Se connecter</button>
+      <button class="link-btn" type="button" id="forgot">Mot de passe oublié ?</button>
+      <p class="hint">Les mêmes identifiants que dans l’app NutriNeo.</p>
+    </form>
+
+    <form id="signup" role="tabpanel" aria-labelledby="tab-signup" novalidate hidden>
+      <div class="field-row">
+        <div class="field">
+          <label for="su-first">Prénom</label>
+          <input id="su-first" name="firstName" autocomplete="given-name" required />
+        </div>
+        <div class="field">
+          <label for="su-last">Nom</label>
+          <input id="su-last" name="lastName" autocomplete="family-name" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="su-email">Email</label>
+        <input id="su-email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="su-password">Mot de passe</label>
+        <input id="su-password" name="password" type="password" autocomplete="new-password" minlength="6" required aria-describedby="su-password-hint" />
+        <span class="hint" id="su-password-hint">6 caractères minimum.</span>
+      </div>
+      <button class="btn btn-primary" type="submit">Créer mon compte coach</button>
+      <p class="hint">Ce compte sert aussi dans l’app NutriNeo. L’offre Découverte est gratuite, sans carte bancaire.</p>
+    </form>
+  </section>
+
+  <!-- ── Compte coach ── -->
+  <section id="coach" hidden>
+    <div class="who"><span>Connecté : <strong id="who-email"></strong></span><button class="link-btn" type="button" id="signout">Se déconnecter</button></div>
+
+    <div class="current">
+      <p class="label">Votre offre</p>
+      <p class="plan-name" id="plan-name"></p>
+      <p id="plan-usage"></p>
+      <p id="plan-status"></p>
+      <button class="btn btn-ghost" type="button" id="portal" hidden>Gérer mon abonnement</button>
+    </div>
+
+    <div class="choose" id="choose" hidden>
+      <h2>Passer à une offre payante</h2>
+      <div class="cycle" role="group" aria-label="Cycle de facturation">
+        <button type="button" data-cycle="annual" aria-pressed="true">Annuel · 2 mois offerts</button>
+        <button type="button" data-cycle="monthly" aria-pressed="false">Mensuel</button>
+      </div>
+      <div class="offer" data-plan="solo">
+        <h3>Solo</h3>
+        <p class="meta"><span data-price></span> · jusqu’à 8 clients</p>
+        <button class="btn btn-primary" type="button" data-checkout="Solo">Choisir Solo</button>
+      </div>
+      <div class="offer" data-plan="pro">
+        <h3>Pro</h3>
+        <p class="meta"><span data-price></span> · jusqu’à 25 clients</p>
+        <button class="btn btn-primary" type="button" data-checkout="Pro">Choisir Pro</button>
+      </div>
+      <p class="hint" style="margin-top: var(--space-5)">Paiement sécurisé par Stripe. Sans engagement : le mensuel se résilie à tout moment, l’annuel est remboursé sous 30 jours. <a href="/cgv/">CGV</a></p>
+    </div>
+  </section>
+
+  <!-- ── Compte client ── -->
+  <section id="client-account" hidden>
+    <p>Ce compte est un compte client. L’app est gratuite pour vous : c’est votre coach qui a une offre NutriNeo.</p>
+    <p><button class="link-btn" type="button" id="signout-client">Se déconnecter</button></p>
+  </section>
+</main>
+
+<footer class="legal-container legal-footer">
+  <p>© 2026 NutriNeo · <a href="/mentions-legales/">Mentions légales</a> · <a href="/confidentialite/">Confidentialité</a> · <a href="/cgv/">CGV</a></p>
+</footer>
+
+<script>
+(() => {
+  const API = 'https://business-nutrineo.hustleharder.xyz';
+  const FIREBASE_KEY = 'AIzaSyBMg-XPpqmngqw4rxQkE62hgPJC-YfSpvo';
+  const AUTH = 'https://identitytoolkit.googleapis.com/v1/accounts';
+  const STORE = 'nutrineo.session';
+  const PRICES = {
+    solo: { monthly: '19 € / mois', annual: '15,83 € / mois, facturé 190 € par an' },
+    pro: { monthly: '39 € / mois', annual: '32,50 € / mois, facturé 390 € par an' },
+  };
+  const PLAN_NAMES = { Decouverte: 'Découverte', Solo: 'Solo', Pro: 'Pro' };
+
+  const $ = (id) => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  let cycle = params.get('cycle') === 'monthly' ? 'monthly' : 'annual';
+  const wanted = (params.get('offre') || '').toLowerCase();
+
+  // ── Messages ────────────────────────────────────────────
+  const notice = $('notice');
+  const say = (text, isError = false) => { notice.textContent = text; notice.classList.toggle('is-error', isError); };
+
+  // ── Session (Firebase Auth REST, no SDK) ────────────────
+  const load = () => { try { return JSON.parse(sessionStorage.getItem(STORE)); } catch { return null; } };
+  const save = (s) => { try { s ? sessionStorage.setItem(STORE, JSON.stringify(s)) : sessionStorage.removeItem(STORE); } catch {} };
+  let session = load();
+
+  const AUTH_ERRORS = {
+    EMAIL_NOT_FOUND: 'Email ou mot de passe incorrect.',
+    INVALID_PASSWORD: 'Email ou mot de passe incorrect.',
+    INVALID_LOGIN_CREDENTIALS: 'Email ou mot de passe incorrect.',
+    EMAIL_EXISTS: 'Un compte existe déjà avec cet email. Connectez-vous.',
+    INVALID_EMAIL: 'Cette adresse email n’est pas valide.',
+    WEAK_PASSWORD: 'Le mot de passe doit faire au moins 6 caractères.',
+    MISSING_PASSWORD: 'Entrez votre mot de passe.',
+    TOO_MANY_ATTEMPTS_TRY_LATER: 'Trop d’essais. Réessayez dans quelques minutes.',
+    USER_DISABLED: 'Ce compte a été désactivé. Écrivez-nous à contact@nutrineo.fit.',
+  };
+
+  async function firebase(path, body) {
+    const res = await fetch(`${AUTH}:${path}?key=${FIREBASE_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const code = (data.error?.message || '').split(' ')[0];
+      throw new Error(AUTH_ERRORS[code] || 'La connexion a échoué. Réessayez.');
+    }
+    return data;
+  }
+
+  const startSession = (d) => {
+    session = { idToken: d.idToken, refreshToken: d.refreshToken, email: d.email, expiresAt: Date.now() + (Number(d.expiresIn) - 60) * 1000 };
+    save(session);
+  };
+
+  async function idToken() {
+    if (!session) return null;
+    if (Date.now() < session.expiresAt) return session.idToken;
+    const res = await fetch(`https://securetoken.googleapis.com/v1/token?key=${FIREBASE_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: session.refreshToken }),
+    });
+    if (!res.ok) { signOut(); return null; }
+    const d = await res.json();
+    session = { ...session, idToken: d.id_token, refreshToken: d.refresh_token, expiresAt: Date.now() + (Number(d.expires_in) - 60) * 1000 };
+    save(session);
+    return session.idToken;
+  }
+
+  // ── NutriNeo API ────────────────────────────────────────
+  async function api(path, options = {}) {
+    const token = await idToken();
+    const res = await fetch(API + path, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...(options.headers || {}) },
+    });
+    const data = res.headers.get('content-type')?.includes('json') ? await res.json() : null;
+    return { status: res.status, ok: res.ok, data };
+  }
+
+  // ── Views ───────────────────────────────────────────────
+  const show = (view) => ['auth', 'coach', 'client-account'].forEach((v) => { $(v).hidden = v !== view; });
+
+  function selectTab(name) {
+    const signup = name === 'signup';
+    $('tab-signin').setAttribute('aria-selected', String(!signup));
+    $('tab-signup').setAttribute('aria-selected', String(signup));
+    $('signin').hidden = signup;
+    $('signup').hidden = !signup;
+  }
+
+  function renderPrices() {
+    document.querySelectorAll('.cycle button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cycle === cycle)));
+    document.querySelectorAll('.offer').forEach((o) => {
+      o.querySelector('[data-price]').textContent = PRICES[o.dataset.plan][cycle];
+      o.classList.toggle('is-wanted', o.dataset.plan === wanted);
+    });
+  }
+
+  const date = (iso) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  function renderBilling(b) {
+    $('plan-name').textContent = PLAN_NAMES[b.plan] || b.plan;
+    $('plan-usage').textContent = `${b.clientCount} client${b.clientCount > 1 ? 's' : ''} sur ${b.clientLimit}`;
+
+    const paid = b.plan !== 'Decouverte';
+    let status = '';
+    if (b.subscriptionStatus === 'past_due') status = 'Le dernier paiement a échoué. Mettez à jour votre carte pour garder votre offre.';
+    else if (paid && b.cancelAtPeriodEnd && b.currentPeriodEnd) status = `Résiliée : votre offre reste active jusqu’au ${date(b.currentPeriodEnd)}.`;
+    else if (paid && b.currentPeriodEnd) status = `Prochain renouvellement le ${date(b.currentPeriodEnd)}.`;
+    else status = 'Gratuite, sans limite de durée.';
+    $('plan-status').textContent = status;
+
+    $('portal').hidden = !paid;
+    $('choose').hidden = paid;
+    renderPrices();
+  }
+
+  async function refresh() {
+    if (!session) { show('auth'); return; }
+    $('who-email').textContent = session.email;
+
+    let me = await api('/api/auth/me');
+    if (me.status === 401) { signOut(); return; }
+    if (me.status === 404) {
+      // Signed in with Firebase but no NutriNeo profile yet: finish the coach sign-up.
+      const pending = load()?.pendingProfile;
+      if (!pending) { say('Ce compte n’a pas encore de profil NutriNeo. Créez-le depuis l’app, ou écrivez-nous.', true); show('auth'); return; }
+      const created = await api('/api/auth/register/coach', { method: 'POST', body: JSON.stringify({ ...pending, dateOfBirth: null }) });
+      if (!created.ok) { say('La création du compte a échoué. Réessayez ou écrivez-nous à contact@nutrineo.fit.', true); return; }
+      session = { ...session, pendingProfile: undefined }; save(session);
+      me = created;
+    }
+    if (!me.ok) { say('Impossible de joindre NutriNeo pour le moment. Réessayez dans un instant.', true); return; }
+    if (me.data.role !== 'coach') { show('client-account'); return; }
+
+    const billing = await api('/api/billing');
+    if (!billing.ok) { say('Impossible de charger votre offre pour le moment.', true); return; }
+    renderBilling(billing.data);
+    show('coach');
+    return billing.data;
+  }
+
+  function signOut() { session = null; save(null); show('auth'); }
+
+  async function busy(button, fn) {
+    button.disabled = true;
+    try { await fn(); } catch (e) { say(e.message || 'Une erreur est survenue. Réessayez.', true); }
+    finally { button.disabled = false; }
+  }
+
+  // ── Events ──────────────────────────────────────────────
+  $('tab-signin').addEventListener('click', () => selectTab('signin'));
+  $('tab-signup').addEventListener('click', () => selectTab('signup'));
+
+  $('signin').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = e.target;
+    busy(f.querySelector('[type=submit]'), async () => {
+      say('');
+      startSession(await firebase('signInWithPassword', { email: f.email.value.trim(), password: f.password.value, returnSecureToken: true }));
+      await refresh();
+    });
+  });
+
+  $('signup').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const firstName = f.firstName.value.trim(), lastName = f.lastName.value.trim();
+    if (!firstName || !lastName) { say('Indiquez votre prénom et votre nom.', true); return; }
+    busy(f.querySelector('[type=submit]'), async () => {
+      say('');
+      startSession(await firebase('signUp', { email: f.email.value.trim(), password: f.password.value, returnSecureToken: true }));
+      session = { ...session, pendingProfile: { firstName, lastName } }; save(session);
+      await refresh();
+      if (!$('coach').hidden) say('Votre compte coach est créé. Connectez-vous dans l’app NutriNeo avec le même email et le même mot de passe.');
+    });
+  });
+
+  $('forgot').addEventListener('click', (e) => {
+    const email = $('si-email').value.trim();
+    if (!email) { say('Entrez d’abord votre email, puis cliquez sur « Mot de passe oublié ».', true); $('si-email').focus(); return; }
+    busy(e.currentTarget, async () => {
+      await firebase('sendOobCode', { requestType: 'PASSWORD_RESET', email });
+      say(`Si un compte existe pour ${email}, un email de réinitialisation vient d’être envoyé.`);
+    });
+  });
+
+  $('signout').addEventListener('click', () => { signOut(); say(''); });
+  $('signout-client').addEventListener('click', () => { signOut(); say(''); });
+
+  document.querySelectorAll('.cycle button').forEach((b) => b.addEventListener('click', () => { cycle = b.dataset.cycle; renderPrices(); }));
+
+  document.querySelectorAll('[data-checkout]').forEach((b) => b.addEventListener('click', () => busy(b, async () => {
+    const res = await api('/api/billing/checkout', {
+      method: 'POST', body: JSON.stringify({ plan: b.dataset.checkout, cycle: cycle === 'annual' ? 'Annual' : 'Monthly' }),
+    });
+    if (res.status === 409) { say('Vous avez déjà un abonnement. Changez d’offre depuis « Gérer mon abonnement ».', true); await refresh(); return; }
+    if (!res.ok || !res.data?.url) throw new Error('Le paiement n’a pas pu démarrer. Réessayez dans un instant.');
+    location.href = res.data.url;
+  })));
+
+  $('portal').addEventListener('click', (e) => busy(e.currentTarget, async () => {
+    const res = await api('/api/billing/portal', { method: 'POST' });
+    if (!res.ok || !res.data?.url) throw new Error('L’espace abonnement n’a pas pu s’ouvrir. Réessayez dans un instant.');
+    location.href = res.data.url;
+  }));
+
+  // ── Start ───────────────────────────────────────────────
+  renderPrices();
+  if (wanted === 'decouverte') selectTab('signup');
+
+  (async () => {
+    const payment = params.get('paiement');
+    const billing = await refresh().catch(() => { say('Impossible de joindre NutriNeo pour le moment.', true); });
+    if (payment === 'annule') say('Paiement annulé. Rien n’a été débité.');
+    if (payment === 'ok' && session) {
+      // Stripe confirms through the webhook, usually within seconds: poll a few times.
+      say('Paiement reçu, merci ! Votre offre s’active…');
+      let b = billing;
+      for (let i = 0; i < 8 && b && b.plan === 'Decouverte'; i++) {
+        await new Promise((r) => setTimeout(r, 2000));
+        b = await refresh();
+      }
+      say(b && b.plan !== 'Decouverte'
+        ? `C’est fait : vous êtes en ${PLAN_NAMES[b.plan]}. Votre nouvelle limite de clients est active dans l’app.`
+        : 'Paiement reçu. L’activation prend un peu plus de temps que prévu : rechargez la page dans une minute.');
+    }
+    if (payment) history.replaceState(null, '', location.pathname);
+  })();
+})();
+</script>
+</body>
+</html>

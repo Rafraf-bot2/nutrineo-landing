@@ -39,6 +39,7 @@
     <li><strong>OVHcloud</strong> (hébergeur français) héberge la base de données et les photos de repas.</li>
     <li><strong>Firebase Authentication</strong> (Google) gère la connexion à votre compte. Google peut traiter ces données en dehors de l’Union européenne, dans le cadre des garanties prévues par le RGPD.</li>
     <li><strong>Brevo</strong> envoie les emails d’invitation d’un coach à ses clients.</li>
+    <li><strong>Stripe</strong> traite le paiement des offres payantes des coachs. Vos données de carte sont saisies chez Stripe : NutriNeo ne les voit ni ne les conserve.</li>
   </ul>
 
   <h2>Combien de temps</h2>
@@ -49,6 +50,7 @@
 
   <h2>Sur ce site</h2>
   <p>Le site nutrineo.fit ne dépose aucun cookie, n’utilise aucun outil de mesure d’audience et ne charge rien depuis d’autres sites : polices, icônes et photos sont hébergées avec lui. Seul son hébergeur, GitHub, reçoit votre adresse IP, comme tout hébergeur de site.</p>
+  <p>La page <a href="/compte/">Votre compte</a> envoie votre email et votre mot de passe à Firebase Authentication (Google) pour vous connecter, puis échange avec l’API NutriNeo. Votre session est gardée dans l’onglet du navigateur et disparaît quand vous le fermez.</p>
 </main>
 
 <footer class="legal-container legal-footer">
