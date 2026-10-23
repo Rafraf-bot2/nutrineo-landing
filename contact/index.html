@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nous écrire · NutriNeo</title>
+<meta name="description" content="Une démo, plus de 25 clients, une question sur NutriNeo : écrivez-nous, on vous répond par email." />
+<link rel="icon" type="image/png" href="/assets/favicon.png" />
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/legal.css" />
+<style>
+  .contact { max-width: 560px; }
+  .contact h1 { margin-bottom: var(--space-4); }
+  .contact .lede { margin-bottom: var(--space-8); color: var(--text-secondary); }
+  [hidden] { display: none !important; }
+
+  .notice {
+    margin-bottom: var(--space-8); padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg); font-size: var(--text-small); line-height: var(--leading-small);
+    background: var(--surface-subtle); color: var(--text-primary);
+  }
+  .notice.is-error { background: var(--status-rejected-bg); color: var(--status-rejected-fg); }
+  .notice:empty { display: none; }
+
+  form { display: grid; gap: var(--space-5); }
+  .field { display: grid; gap: var(--space-2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  label { font: var(--weight-semibold) var(--text-small)/1 var(--font-sans); color: var(--text-strong); }
+  label .optional { font-weight: var(--weight-regular); color: var(--text-secondary); }
+  input, select, textarea {
+    width: 100%; min-height: 48px; padding: 0 var(--space-4);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    background: var(--surface-card); color: var(--text-primary);
+    font: var(--weight-regular) 16px/1 var(--font-sans);
+  }
+  textarea { min-height: 160px; padding: var(--space-3) var(--space-4); line-height: 1.5; resize: vertical; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+  .hint { font-size: var(--text-small); color: var(--text-secondary); }
+
+  /* Honeypot: off-screen for people, still filled in by bots. */
+  .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    justify-self: start; min-height: 48px; padding: 0 var(--space-6);
+    border: 1px solid transparent; border-radius: var(--radius-lg); cursor: pointer;
+    font: var(--weight-semibold) var(--text-body)/1 var(--font-sans); text-decoration: none;
+    transition: background-color .12s ease, opacity .12s ease;
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn[disabled] { opacity: .55; cursor: progress; }
+
+  .sent h2 { margin: 0 0 var(--space-3); }
+  .sent p { color: var(--text-secondary); }
+  .sent p + p { margin-top: var(--space-4); }
+
+  @media (max-width: 520px) {
+    .field-row { grid-template-columns: 1fr; }
+    .btn { justify-self: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="legal-nav">
+  <div class="legal-container">
+    <a class="wordmark" href="/"><em>N</em>utri<em>N</em>eo</a>
+  </div>
+</nav>
+
+<main class="legal-container legal contact">
+  <h1>Nous écrire</h1>
+  <p class="lede" id="lede">Une question sur NutriNeo&nbsp;? On vous répond par email.</p>
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+
+  <form id="form" novalidate>
+    <div class="field-row">
+      <div class="field">
+        <label for="firstName">Prénom</label>
+        <input id="firstName" name="firstName" autocomplete="given-name" maxlength="80" required />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" maxlength="200" required />
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="topic">Motif</label>
+        <select id="topic" name="topic">
+          <option value="demo">Demander une démo</option>
+          <option value="plus-de-25">Plus de 25 clients</option>
+          <option value="solo">Offre Solo</option>
+          <option value="pro">Offre Pro</option>
+          <option value="autre">Autre question</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="clientCount">Clients suivis <span class="optional">(facultatif)</span></label>
+        <input id="clientCount" name="clientCount" type="number" inputmode="numeric" min="0" max="100000" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="message">Message</label>
+      <textarea id="message" name="message" maxlength="4000" required></textarea>
+    </div>
+    <div class="trap" aria-hidden="true">
+      <label for="website">Site web</label>
+      <input id="website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+    <button class="btn btn-primary" type="submit">Envoyer</button>
+    <p class="hint">Votre message sert uniquement à vous répondre. <a href="/confidentialite/">Confidentialité</a></p>
+  </form>
+
+  <section class="sent" id="sent" hidden tabindex="-1">
+    <h2>Message envoyé</h2>
+    <p id="sent-text"></p>
+    <p><a href="/">Retour à l’accueil</a></p>
+  </section>
+</main>
+
+<footer class="legal-container legal-footer">
+  <p>© 2026 NutriNeo · <a href="/mentions-legales/">Mentions légales</a> · <a href="/confidentialite/">Confidentialité</a> · <a href="/cgv/">CGV</a></p>
+</footer>
+
+<script>
+(() => {
+  const API = 'https://business-nutrineo.hustleharder.xyz';
+  const TOPICS = {
+    demo: {
+      api: 'Demo',
+      lede: 'Dites-nous comment vous suivez vos clients aujourd’hui. On revient vers vous pour caler une démo.',
+      placeholder: 'Votre activité, vos disponibilités…',
+    },
+    'plus-de-25': {
+      api: 'MoreThan25',
+      lede: 'Plus de 25 clients, ou plusieurs coachs dans la même structure ? Décrivez-nous votre activité, on trouve une formule.',
+      placeholder: 'Combien de coachs, quel type de suivi…',
+    },
+    solo: {
+      api: 'Solo',
+      lede: 'Le paiement en ligne arrive bientôt. Laissez-nous un mot, on vous recontacte pour démarrer avec Solo.',
+      placeholder: 'Votre activité, vos questions…',
+    },
+    pro: {
+      api: 'Pro',
+      lede: 'Le paiement en ligne arrive bientôt. Laissez-nous un mot, on vous recontacte pour démarrer avec Pro.',
+      placeholder: 'Votre activité, vos questions…',
+    },
+    autre: {
+      api: 'Other',
+      lede: 'Une question sur NutriNeo ? On vous répond par email.',
+      placeholder: 'Votre question…',
+    },
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const form = $('form');
+  const notice = $('notice');
+  const say = (text, isError = false) => { notice.textContent = text; notice.classList.toggle('is-error', isError); };
+
+  function applyTopic() {
+    const t = TOPICS[form.topic.value];
+    $('lede').textContent = t.lede;
+    form.message.placeholder = t.placeholder;
+  }
+
+  const wanted = new URLSearchParams(location.search).get('sujet');
+  if (TOPICS[wanted]) form.topic.value = wanted;
+  applyTopic();
+  form.topic.addEventListener('change', applyTopic);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const firstName = form.firstName.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+    const count = form.clientCount.value.trim();
+
+    if (!firstName) { say('Indiquez votre prénom.', true); form.firstName.focus(); return; }
+    if (!form.email.checkValidity() || !email) { say('Cette adresse email n’est pas valide.', true); form.email.focus(); return; }
+    if (!message) { say('Écrivez votre message.', true); form.message.focus(); return; }
+
+    const button = form.querySelector('[type=submit]');
+    button.disabled = true;
+    say('');
+    try {
+      const res = await fetch(`${API}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName, email, message,
+          topic: TOPICS[form.topic.value].api,
+          clientCount: count ? Number(count) : null,
+          website: form.website.value,
+        }),
+      });
+      if (res.status === 429) { say('Vous avez déjà envoyé plusieurs messages. Réessayez dans une heure, ou écrivez à contact@nutrineo.fit.', true); return; }
+      if (!res.ok) throw new Error();
+      $('sent-text').textContent = `Merci ${firstName}. On vous répond à ${email}.`;
+      form.hidden = true;
+      $('sent').hidden = false;
+      $('sent').focus();
+    } catch {
+      say('L’envoi n’a pas abouti. Réessayez dans un instant, ou écrivez directement à contact@nutrineo.fit.', true);
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
