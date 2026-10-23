@@ -186,6 +186,7 @@
       </div>
       <p class="hint" style="margin-top: var(--space-5)">Paiement sécurisé par Stripe. Sans engagement : le mensuel se résilie à tout moment, l’annuel est remboursé sous 30 jours. <a href="/cgv/">CGV</a></p>
     </div>
+    <p class="hint" id="soon" hidden>Plus d’un client à suivre&nbsp;? Les offres Solo et Pro arrivent bientôt en ligne. D’ici là, <a href="mailto:contact@nutrineo.fit?subject=NutriNeo%20%C2%B7%20Offre%20Solo%20ou%20Pro">écrivez-nous</a>.</p>
   </section>
 
   <!-- ── Compte client ── -->
@@ -209,12 +210,15 @@
     solo: { monthly: '19 € / mois', annual: '15,83 € / mois, facturé 190 € par an' },
     pro: { monthly: '39 € / mois', annual: '32,50 € / mois, facturé 390 € par an' },
   };
+  // Solo and Pro stay closed while Stripe is in test mode. Add ?test to the URL to try the checkout.
+  const PAYMENTS_OPEN = false;
   const PLAN_NAMES = { Decouverte: 'Découverte', Solo: 'Solo', Pro: 'Pro' };
 
   const $ = (id) => document.getElementById(id);
   const params = new URLSearchParams(location.search);
   let cycle = params.get('cycle') === 'monthly' ? 'monthly' : 'annual';
   const wanted = (params.get('offre') || '').toLowerCase();
+  const payments = PAYMENTS_OPEN || params.has('test');
 
   // ── Messages ────────────────────────────────────────────
   const notice = $('notice');
@@ -313,7 +317,8 @@
     $('plan-status').textContent = status;
 
     $('portal').hidden = !paid;
-    $('choose').hidden = paid;
+    $('choose').hidden = paid || !payments;
+    $('soon').hidden = paid || payments;
     renderPrices();
   }
 
@@ -374,7 +379,7 @@
       startSession(await firebase('signUp', { email: f.email.value.trim(), password: f.password.value, returnSecureToken: true }));
       session = { ...session, pendingProfile: { firstName, lastName } }; save(session);
       await refresh();
-      if (!$('coach').hidden) say('Votre compte coach est créé. Connectez-vous dans l’app NutriNeo avec le même email et le même mot de passe.');
+      if (!$('coach').hidden) say(`Votre compte coach est créé. L’app NutriNeo arrive bientôt\u00a0: on vous écrit à ${session.email} dès qu’elle est disponible. Vous vous y connecterez avec ce même email et ce mot de passe.`);
     });
   });
 
