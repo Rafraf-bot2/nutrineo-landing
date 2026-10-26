@@ -14,12 +14,14 @@ a:hover { text-decoration-thickness: 2px; }
 .legal-nav { border-bottom: 1px solid var(--border-default); }
 .legal-nav .legal-container { height: 68px; display: flex; align-items: center; }
 .wordmark {
-  font: var(--weight-extrabold) 22px/1 var(--font-display);
-  letter-spacing: -1.1px;
+  font: var(--weight-extrabold) 23.5px/1 var(--font-display);
+  letter-spacing: -0.9px;
   color: var(--text-strong);
   text-decoration: none;
 }
 .wordmark em { font-style: normal; color: var(--terracotta-800); }
+.wordmark-mark { height: 1.5em; width: auto; margin-right: .28em; flex: none; }
+.wordmark { display: inline-flex; align-items: center; }
 
 .legal { padding-block: var(--space-16) var(--space-20); }
 .legal h1 {

@@ -22,7 +22,10 @@
 <meta name="twitter:title" content="NutriNeo · Le suivi nutrition, entre vos séances" />
 <meta name="twitter:description" content="Vos clients photographient. Vous validez. Ils progressent." />
 <meta name="twitter:image" content="https://nutrineo.fit/assets/og.jpg" />
-<link rel="icon" type="image/png" href="assets/favicon.png" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="icon" type="image/png" sizes="48x48" href="assets/favicon.png" />
+<link rel="alternate icon" href="favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="preload" href="assets/fonts/bricolage-grotesque-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="styles.css" />
@@ -107,11 +110,13 @@
 
   /* ── Wordmark (AnimatedWordmark: 2 N's terracotta) ────── */
   .wordmark {
-    font: var(--weight-extrabold) 22px/1 var(--font-display);
-    letter-spacing: -1.1px;
+    display: inline-flex; align-items: center;
+    font: var(--weight-extrabold) 23.5px/1 var(--font-display);
+    letter-spacing: -0.9px;
     color: var(--text-strong);
   }
   .wordmark em { font-style: normal; color: var(--terracotta-800); }
+  .wordmark-mark { height: 1.5em; width: auto; margin-right: .28em; flex: none; }
 
   /* ── Nav · frosted glass (GlassSurface) ───────────────── */
   .nav {
@@ -133,7 +138,7 @@
   }
   .nav-links a:not(.btn):hover { color: var(--text-primary); }
   .nav .btn { padding: 10px var(--space-5); font-size: var(--text-small); }
-  @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } }
+  @media (max-width: 720px) { .nav-links a:not(.btn) { display: none; } .nav-cta-long { display: none; } .nav-links .btn { white-space: nowrap; } }
 
   /* ── Hero · aurora canvas (AuroraBackground) ──────────── */
   .hero { position: relative; overflow: hidden; }
@@ -725,7 +730,7 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: var(--space-4); flex-wrap: wrap;
   }
-  .footer-inner .wordmark { font-size: 16px; letter-spacing: -0.6px; }
+  .footer-inner .wordmark { font-size: 17px; letter-spacing: -0.6px; }
   .footer-inner p { font: var(--weight-regular) var(--text-small)/var(--leading-small) var(--font-sans); color: var(--text-secondary); }
   .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
   @media (max-width: 720px) { .footer-inner { flex-direction: column; align-items: flex-start; } }
@@ -749,13 +754,13 @@
 <!-- ══ Nav · frosted glass ══ -->
 <nav class="nav">
   <div class="container nav-inner">
-    <a class="wordmark" href="#"><em>N</em>utri<em>N</em>eo</a>
+    <a class="wordmark" href="#"><img class="wordmark-mark" src="assets/symbol.svg" alt="" width="32" height="32" /><em>n</em>utri<em>n</em>eo</a>
     <div class="nav-links">
       <a href="#comment">Comment ça marche</a>
       <a href="#produit">Le produit</a>
       <a href="#tarifs">Tarifs</a>
       <a href="/compte/">Se connecter</a>
-      <a href="/compte/?offre=decouverte" class="btn btn-primary">Commencer gratuitement</a>
+      <a href="/compte/?offre=decouverte" class="btn btn-primary">Commencer<span class="nav-cta-long"> gratuitement</span></a>
     </div>
   </div>
 </nav>
@@ -985,11 +990,15 @@
       </details>
       <details>
         <summary>Et si j’ai plus de clients que mon offre n’en permet ?</summary>
-        <p>Passez à l’offre supérieure : Découverte compte 1 client, Solo 8, Pro 25. Au-delà de 25, <a href="/contact/?sujet=plus-de-25">écrivez-nous</a>. Les repas photographiés restent illimités dans toutes les offres.</p>
+        <p>Passez à l’offre supérieure : Découverte compte 1 client, Solo 8, Pro 25. Au-delà de 25, <a href="/contact/?sujet=plus-de-25">écrivez-nous</a>. Vous pouvez aussi retirer un client que vous ne suivez plus : sa place se libère aussitôt et il garde l’historique de vos échanges.</p>
       </details>
       <details>
         <summary>Comment résilier ?</summary>
         <p>Écrivez à <a href="mailto:contact@nutrineo.fit">contact@nutrineo.fit</a>. Le mensuel s’arrête au renouvellement suivant, sans frais, et vous gardez l’accès jusqu’à la fin du mois payé. L’annuel est remboursé en totalité si vous annulez dans les 30 jours suivant le paiement.</p>
+      </details>
+      <details>
+        <summary>Et si je passe à une offre plus petite ?</summary>
+        <p>Rien n’est supprimé. À la fin de la période payée, vous choisissez quels clients restent actifs. Les autres passent en pause : ils gardent leur historique mais n’envoient plus de repas, jusqu’à ce que vous les réactiviez.</p>
       </details>
       <details>
         <summary>NutriNeo donne-t-il des conseils nutritionnels ?</summary>
@@ -1020,7 +1029,7 @@
 <!-- ══ Footer ══ -->
 <footer>
   <div class="container footer-inner">
-    <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><em>N</em>utri<em>N</em>eo</a>
+    <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><img class="wordmark-mark" src="assets/symbol.svg" alt="" width="32" height="32" /><em>n</em>utri<em>n</em>eo</a>
     <p class="footer-links"><span>© 2026 NutriNeo</span><a href="mailto:contact@nutrineo.fit">contact@nutrineo.fit</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a><a href="/cgv/">CGV</a></p>
   </div>
 </footer>
