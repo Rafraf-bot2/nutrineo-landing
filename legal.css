@@ -20,7 +20,7 @@ a:hover { text-decoration-thickness: 2px; }
   text-decoration: none;
 }
 .wordmark em { font-style: normal; color: var(--terracotta-800); }
-.wordmark-mark { height: 1.5em; width: auto; margin-right: .28em; flex: none; }
+.wordmark-img { display: block; height: 40px; width: auto; }
 .wordmark { display: inline-flex; align-items: center; }
 
 .legal { padding-block: var(--space-16) var(--space-20); }

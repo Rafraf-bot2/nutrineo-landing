@@ -116,7 +116,7 @@
     color: var(--text-strong);
   }
   .wordmark em { font-style: normal; color: var(--terracotta-800); }
-  .wordmark-mark { height: 1.5em; width: auto; margin-right: .28em; flex: none; }
+  .wordmark-img { display: block; height: 40px; width: auto; }
 
   /* ── Nav · frosted glass (GlassSurface) ───────────────── */
   .nav {
@@ -730,7 +730,7 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: var(--space-4); flex-wrap: wrap;
   }
-  .footer-inner .wordmark { font-size: 17px; letter-spacing: -0.6px; }
+  .footer-inner .wordmark-img { height: 34px; }
   .footer-inner p { font: var(--weight-regular) var(--text-small)/var(--leading-small) var(--font-sans); color: var(--text-secondary); }
   .footer-links { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
   @media (max-width: 720px) { .footer-inner { flex-direction: column; align-items: flex-start; } }
@@ -754,7 +754,7 @@
 <!-- ══ Nav · frosted glass ══ -->
 <nav class="nav">
   <div class="container nav-inner">
-    <a class="wordmark" href="#"><img class="wordmark-mark" src="assets/symbol.svg" alt="" width="32" height="32" /><em>n</em>utri<em>n</em>eo</a>
+    <a class="wordmark" href="#"><img class="wordmark-img" src="assets/logo.svg" alt="NutriNeo" width="142" height="40" /></a>
     <div class="nav-links">
       <a href="#comment">Comment ça marche</a>
       <a href="#produit">Le produit</a>
@@ -1029,7 +1029,7 @@
 <!-- ══ Footer ══ -->
 <footer>
   <div class="container footer-inner">
-    <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><img class="wordmark-mark" src="assets/symbol.svg" alt="" width="32" height="32" /><em>n</em>utri<em>n</em>eo</a>
+    <a class="wordmark" href="#" aria-label="NutriNeo, retour en haut"><img class="wordmark-img" src="assets/logo.svg" alt="NutriNeo" width="142" height="40" /></a>
     <p class="footer-links"><span>© 2026 NutriNeo</span><a href="mailto:contact@nutrineo.fit">contact@nutrineo.fit</a><a href="/mentions-legales/">Mentions légales</a><a href="/confidentialite/">Confidentialité</a><a href="/cgv/">CGV</a></p>
   </div>
 </footer>
