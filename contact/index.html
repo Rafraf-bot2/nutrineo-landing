@@ -85,13 +85,17 @@
   <form id="form" novalidate>
     <div class="field-row">
       <div class="field">
-        <label for="firstName">Prénom</label>
-        <input id="firstName" name="firstName" autocomplete="given-name" maxlength="80" required />
+        <label for="lastName">Nom</label>
+        <input id="lastName" name="lastName" autocomplete="family-name" maxlength="80" required />
       </div>
       <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" maxlength="200" required />
+        <label for="firstName">Prénom <span class="optional">(facultatif)</span></label>
+        <input id="firstName" name="firstName" autocomplete="given-name" maxlength="80" />
       </div>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email" maxlength="200" required />
     </div>
     <div class="field-row">
       <div class="field">
@@ -175,12 +179,14 @@
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const lastName = form.lastName.value.trim();
     const firstName = form.firstName.value.trim();
+    const fullName = [firstName, lastName].join(' ').trim();
     const email = form.email.value.trim();
     const message = form.message.value.trim();
     const count = form.clientCount.value.trim();
 
-    if (!firstName) { say('Indiquez votre prénom.', true); form.firstName.focus(); return; }
+    if (!lastName) { say('Indiquez votre nom.', true); form.lastName.focus(); return; }
     if (!form.email.checkValidity() || !email) { say('Cette adresse email n’est pas valide.', true); form.email.focus(); return; }
     if (!message) { say('Écrivez votre message.', true); form.message.focus(); return; }
 
@@ -192,7 +198,7 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName, email, message,
+          firstName: fullName, email, message,
           topic: TOPICS[form.topic.value].api,
           clientCount: count ? Number(count) : null,
           website: form.website.value,
@@ -200,7 +206,7 @@
       });
       if (res.status === 429) { say('Vous avez déjà envoyé plusieurs messages. Réessayez dans une heure, ou écrivez à contact@nutrineo.fit.', true); return; }
       if (!res.ok) throw new Error();
-      $('sent-text').textContent = `Merci ${firstName}. On vous répond à ${email}.`;
+      $('sent-text').textContent = `Merci ${firstName || lastName}. On vous répond à ${email}.`;
       form.hidden = true;
       $('sent').hidden = false;
       $('sent').focus();
