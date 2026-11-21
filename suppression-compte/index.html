@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Supprimer mon compte · NutriNeo</title>
+<meta name="description" content="Supprimez votre compte NutriNeo et les données qui y sont liées, depuis l’app ou depuis cette page." />
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+<link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon.png" />
+<link rel="alternate icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+<link rel="stylesheet" href="/styles.css" />
+<link rel="stylesheet" href="/legal.css" />
+<style>
+  .account { max-width: 560px; }
+  [hidden] { display: none !important; }
+
+  .notice {
+    margin: var(--space-8) 0; padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-lg); font-size: var(--text-small); line-height: var(--leading-small);
+    background: var(--surface-subtle); color: var(--text-primary);
+  }
+  .notice.is-error { background: var(--status-rejected-bg); color: var(--status-rejected-fg); }
+  .notice:empty { display: none; }
+
+  form { display: grid; gap: var(--space-5); margin-top: var(--space-6); }
+  .field { display: grid; gap: var(--space-2); }
+  label { font: var(--weight-semibold) var(--text-small)/1 var(--font-sans); color: var(--text-strong); }
+  input {
+    width: 100%; min-height: 48px; padding: 0 var(--space-4);
+    border: 1px solid var(--border-strong); border-radius: var(--radius-md);
+    background: var(--surface-card); color: var(--text-primary);
+    font: var(--weight-regular) 16px/1 var(--font-sans);
+  }
+  input:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 1px; }
+  .hint { font-size: var(--text-small); color: var(--text-secondary); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: 48px; padding: 0 var(--space-6);
+    border: 1px solid transparent; border-radius: var(--radius-lg); cursor: pointer;
+    font: var(--weight-semibold) var(--text-body)/1 var(--font-sans); text-decoration: none;
+    transition: background-color .12s ease, opacity .12s ease;
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-primary-contrast); }
+  .btn-primary:hover { background: var(--color-primary-hover); }
+  .btn-danger { background: var(--status-rejected-fg); color: #fff; }
+  .btn-danger:hover { opacity: .9; }
+  .btn[disabled] { opacity: .55; cursor: progress; }
+  .link-btn {
+    justify-self: start; padding: 0; border: 0; background: none; cursor: pointer;
+    font: var(--weight-regular) var(--text-small)/1.4 var(--font-sans);
+    color: var(--terracotta-700); text-decoration: underline; text-underline-offset: 3px;
+  }
+
+  .who { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4);
+    padding-bottom: var(--space-6); border-bottom: 1px solid var(--border-default); font-size: var(--text-small); color: var(--text-secondary); }
+  .who strong { color: var(--text-strong); font-weight: var(--weight-semibold); }
+  .danger-zone { padding-top: var(--space-6); }
+  .danger-zone h2 { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<nav class="legal-nav">
+  <div class="legal-container">
+    <a class="wordmark" href="/"><img class="wordmark-img" src="/assets/logo.svg" alt="NutriNeo" width="142" height="40" /></a>
+  </div>
+</nav>
+
+<main class="legal-container legal account">
+  <h1>Supprimer mon compte NutriNeo</h1>
+  <p class="legal-lede">Vous pouvez supprimer votre compte et les données associées à tout moment, depuis l’app ou depuis cette page.</p>
+
+  <h2>Depuis l’app</h2>
+  <p>Ouvrez NutriNeo, allez dans <strong>Profil → Paramètres → Supprimer mon compte</strong>, puis confirmez.</p>
+
+  <h2>Depuis cette page</h2>
+  <p>Connectez-vous avec l’email et le mot de passe de votre compte NutriNeo, puis confirmez la suppression. Elle est immédiate et définitive.</p>
+
+  <h2>Ce qui est supprimé</h2>
+  <ul>
+    <li><strong>Client</strong> : votre compte, vos photos de repas et leurs descriptions, les retours de votre coach, vos conversations et votre photo de profil.</li>
+    <li><strong>Coach</strong> : votre compte, vos conversations, vos tags, vos invitations et votre photo de profil. Votre abonnement payant est résilié immédiatement. Vos clients gardent leur compte mais ne sont plus rattachés à vous.</li>
+    <li>Votre identifiant de connexion (Firebase Authentication) est supprimé en même temps.</li>
+  </ul>
+
+  <h2>Ce qui est conservé</h2>
+  <p>Si vous avez eu un abonnement payant, Stripe conserve vos factures (nom, email, montants) pour les obligations comptables et fiscales, pendant la durée légale. Rien d’autre n’est conservé.</p>
+
+  <p class="notice" id="notice" role="status" aria-live="polite"></p>
+
+  <!-- ── Connexion ── -->
+  <section id="auth">
+    <h2>Se connecter pour supprimer</h2>
+    <form id="signin" novalidate>
+      <div class="field">
+        <label for="si-email">Email</label>
+        <input id="si-email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="si-password">Mot de passe</label>
+        <input id="si-password" name="password" type="password" autocomplete="current-password" required />
+      </div>
+      <button class="btn btn-primary" type="submit">Continuer</button>
+      <button class="link-btn" type="button" id="forgot">Mot de passe oublié ?</button>
+    </form>
+    <p class="hint" style="margin-top: var(--space-5)">Plus d’accès à votre compte ? Écrivez-nous depuis <a href="/contact/">le formulaire de contact</a>, en indiquant l’email du compte.</p>
+  </section>
+
+  <!-- ── Confirmation ── -->
+  <section id="confirm" hidden>
+    <div class="who"><span>Connecté : <strong id="who-email"></strong></span><button class="link-btn" type="button" id="signout">Ce n’est pas moi</button></div>
+    <div class="danger-zone">
+      <h2>Supprimer définitivement ce compte</h2>
+      <p>Cette action ne peut pas être annulée. Pour confirmer, tapez <strong>SUPPRIMER</strong>.</p>
+      <form id="delete" novalidate>
+        <div class="field">
+          <label for="del-word">Confirmation</label>
+          <input id="del-word" name="word" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+        </div>
+        <button class="btn btn-danger" type="submit" id="delete-btn" disabled>Supprimer mon compte</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── Terminé ── -->
+  <section id="done" hidden>
+    <h2>Compte supprimé</h2>
+    <p>Votre compte NutriNeo et vos données ont été supprimés. Vous pouvez désinstaller l’app.</p>
+  </section>
+</main>
+
+<footer class="legal-container legal-footer">
+  <p>© 2026 NutriNeo · <a href="/mentions-legales/">Mentions légales</a> · <a href="/confidentialite/">Confidentialité</a> · <a href="/cgv/">CGV</a></p>
+</footer>
+
+<script>
+(() => {
+  const API = 'https://business-nutrineo.hustleharder.xyz';
+  const FIREBASE_KEY = 'AIzaSyBMg-XPpqmngqw4rxQkE62hgPJC-YfSpvo';
+  const AUTH = 'https://identitytoolkit.googleapis.com/v1/accounts';
+  const CONFIRM_WORD = 'SUPPRIMER';
+
+  const $ = (id) => document.getElementById(id);
+  const notice = $('notice');
+  const say = (text, isError = false) => { notice.textContent = text; notice.classList.toggle('is-error', isError); };
+  const show = (view) => ['auth', 'confirm', 'done'].forEach((v) => { $(v).hidden = v !== view; });
+
+  // The session lives in memory only: nothing is kept once the page is closed.
+  let session = null;
+
+  const AUTH_ERRORS = {
+    EMAIL_NOT_FOUND: 'Email ou mot de passe incorrect.',
+    INVALID_PASSWORD: 'Email ou mot de passe incorrect.',
+    INVALID_LOGIN_CREDENTIALS: 'Email ou mot de passe incorrect.',
+    INVALID_EMAIL: 'Cette adresse email n’est pas valide.',
+    MISSING_PASSWORD: 'Entrez votre mot de passe.',
+    TOO_MANY_ATTEMPTS_TRY_LATER: 'Trop d’essais. Réessayez dans quelques minutes.',
+    USER_DISABLED: 'Ce compte a été désactivé. Écrivez-nous à contact@nutrineo.fit.',
+  };
+
+  async function firebase(path, body) {
+    const res = await fetch(`${AUTH}:${path}?key=${FIREBASE_KEY}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const code = (data.error?.message || '').split(' ')[0];
+      throw new Error(AUTH_ERRORS[code] || 'La connexion a échoué. Réessayez.');
+    }
+    return data;
+  }
+
+  async function busy(button, fn) {
+    button.disabled = true;
+    try { await fn(); } catch (e) { say(e.message || 'Une erreur est survenue. Réessayez.', true); }
+    finally { button.disabled = false; syncDeleteButton(); }
+  }
+
+  function syncDeleteButton() {
+    $('delete-btn').disabled = $('del-word').value.trim().toUpperCase() !== CONFIRM_WORD;
+  }
+
+  $('signin').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = e.target;
+    busy(f.querySelector('[type=submit]'), async () => {
+      say('');
+      const d = await firebase('signInWithPassword', { email: f.email.value.trim(), password: f.password.value, returnSecureToken: true });
+      session = { idToken: d.idToken, email: d.email };
+      f.password.value = '';
+      $('who-email').textContent = session.email;
+      $('del-word').value = '';
+      show('confirm');
+    });
+  });
+
+  $('forgot').addEventListener('click', (e) => {
+    const email = $('si-email').value.trim();
+    if (!email) { say('Entrez d’abord votre email, puis cliquez sur « Mot de passe oublié ».', true); $('si-email').focus(); return; }
+    busy(e.currentTarget, async () => {
+      await firebase('sendOobCode', { requestType: 'PASSWORD_RESET', email });
+      say(`Si un compte existe pour ${email}, un email de réinitialisation vient d’être envoyé.`);
+    });
+  });
+
+  $('signout').addEventListener('click', () => { session = null; say(''); show('auth'); });
+  $('del-word').addEventListener('input', syncDeleteButton);
+
+  $('delete').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if ($('del-word').value.trim().toUpperCase() !== CONFIRM_WORD || !session) return;
+    busy($('delete-btn'), async () => {
+      say('');
+      const res = await fetch(`${API}/api/auth/me`, {
+        method: 'DELETE', headers: { Authorization: `Bearer ${session.idToken}` },
+      });
+      if (res.status === 401) { session = null; show('auth'); throw new Error('Votre session a expiré. Reconnectez-vous.'); }
+      if (res.status === 502) throw new Error('Votre abonnement n’a pas pu être résilié : votre compte n’a pas été supprimé. Réessayez dans un instant.');
+      if (!res.ok) throw new Error('La suppression a échoué. Réessayez, ou écrivez-nous à contact@nutrineo.fit.');
+      session = null;
+      show('done');
+    });
+  });
+})();
+</script>
+</body>
+</html>
